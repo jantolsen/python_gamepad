@@ -10,10 +10,11 @@
 #           [19.06.2022] - Jan T. Olsen
 
 # Import packages
+from dataclasses import dataclass
 from inputs import get_gamepad
 import struct
 import threading
-import enum
+from enum import Enum
 
 # Constants
 # ------------------------------
@@ -43,7 +44,57 @@ BTN_JR = 'BTN_THUMBR'       # Button - Joystick Right Push
 BTN_START = 'BTN_START'     # Button - Start
 BTN_SELECT = 'BTN_SELECT'   # Button - Start
 
+class XBOX_CONSTANTS(Enum):
+    AXIS_KEY = 'Absolute'       # Axis Event
+    JL_X = 'ABS_X'              # Joystick Left - Axis X
+    JL_Y = 'ABS_Y'              # Joystick Left - Axis Y
+    JR_X = 'ABS_RX'             # Joystick Right - Axis X
+    JR_Y = 'ABS_RY'             # Joystick Right - Axis Y
+    TL = 'ABS_Z'                # Trigger Left - Axis
+    TR = 'ABS_RZ'               # Trigger Right - Axis
 
+    # Defining Button constants
+    # class BUTTON_KEY(enum.Enum):
+    BTN_KEY = 'Key'             # Button Event
+    DX = 'ABS_HAT0X'            # D-Pad - Axis X
+    DY = 'ABS_HAT0Y'            # D-Pad - Axis Y
+    BTN_A = 'BTN_SOUTH'         # Button - A
+    BTN_B = 'BTN_EAST'          # Button - B
+    BTN_X = 'BTN_WEST'          # Button - X
+    BTN_Y = 'BTN_NORTH'         # Button - Y
+    BTN_LB = 'BTN_TL'           # Button - Left-Back
+    BTN_RB = 'BTN_TR'           # Button - Right-Back   
+    BTN_JL = 'BTN_THUMBL'       # Button - Joystick Left Push
+    BTN_JR = 'BTN_THUMBR'       # Button - Joystick Right Push
+    BTN_START = 'BTN_START'     # Button - Start
+    BTN_SELECT = 'BTN_SELECT'   # Button - Start
+
+@dataclass
+class Axis:
+    
+    # Members
+    # ------------------------------
+    # Declare Axis members
+    JoystickLeft_X : float = 0.0    # Joystick Left - Axis X
+    JoystickLeft_Y : float = 0.0    # Joystick Left - Axis Y
+    JoystickRight_X : float = 0.0   # Joystick Right - Axis X
+    JoystickRight_Y : float = 0.0   # Joystick Right - Axis Y
+    TriggerLeft : float = 0.0       # Trigger Left - Axis
+    TriggerRight : float = 0.0      # Trigger Left - Axis
+
+    # Constants
+    # ------------------------------
+    # Definine Axis constants
+    AXIS_KEY = 'Absolute'           # Axis Event
+    JL_X = 'ABS_X'                  # Joystick Left - Axis X
+    JL_Y = 'ABS_Y'                  # Joystick Left - Axis Y
+    JR_X = 'ABS_RX'                 # Joystick Right - Axis X
+    JR_Y = 'ABS_RY'                 # Joystick Right - Axis Y
+    TL = 'ABS_Z'                    # Trigger Left - Axis
+    TR = 'ABS_RZ'                   # Trigger Right - Axis
+
+    def Values(self):
+        return self.JoystickLeft_X
     
 # XBOX Controller Class
 # ------------------------------
@@ -52,6 +103,10 @@ class XboxController():
     # Class constructor
     # ------------------------------
     def __init__(self):
+
+        self.axis = Axis()
+
+        self.CONSTANTS = XBOX_CONSTANTS
 
         # Initialize Axis
         self.Axis_JoyLeft_X = 0     # Joystick Left - Axis X
@@ -86,6 +141,9 @@ class XboxController():
     # Read Controller values
     # ------------------------------
     def read(self):
+
+        print(XBOX_CONSTANTS.AXIS_KEY)
+
         joyLeftX = self.Axis_JoyLeft_X
         joyLeftY = self.Axis_JoyLeft_Y
         joyRightX = self.Axis_JoyRight_X
@@ -94,7 +152,9 @@ class XboxController():
         buttonA = self.Button_A
         buttonB = self.Button_B
 
-        return [joyLeftX, joyLeftY, buttonA, buttonB, joyRightX, joyRightY]
+
+        return [self.axis.JoystickLeft_X, self.axis.Values()]
+        # return [self.Axis.JoystickLeft_X, joyLeftY, buttonA, buttonB, joyRightX, joyRightY]
         
     # Controller Monitor
     # # ------------------------------    
@@ -102,7 +162,7 @@ class XboxController():
 
         # While-Loop for detecting controller inputs
         while True:
-
+            
             # Get Controller Action
             events = get_gamepad()
 
@@ -112,10 +172,12 @@ class XboxController():
                 # Axis Event
                 # ------------------------------
                 # Incomming Controller-Input are Axis-Values (integer values)
-                if event.ev_type == AXIS_KEY:
+                if event.ev_type == self.CONSTANTS.AXIS_KEY.value:
 
                     if event.code == JL_X:
                         self.Axis_JoyLeft_X = event.state
+
+                        self.axis.JoystickLeft_X = event.state
 
                     elif event.code == JL_Y:
                         self.Axis_JoyLeft_Y = event.state
