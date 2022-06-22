@@ -54,6 +54,7 @@ class _Button:
 
     LB2: bool = 0           # Button - Left-Back Trigger
     RB2: bool = 0           # Button - Right-Back Trigger
+    
 # Dataclass - XBOX One Constants
 # ------------------------------
 @dataclass
@@ -85,9 +86,11 @@ class _CONST_XBOXONE:
 
     # Axis Min / Max Values
     JOY_MIN = -32768
-    JOY_MAX = -32767
+    JOY_MAX = 32767
+    JOY_DB = 2500
     TRG_MIN = 0
     TRG_MAX = 255
+    TRG_DB = 0
 
 # Dataclass - PS3 Constants
 # ------------------------------
@@ -121,6 +124,91 @@ class _CONST_PS3:
     BTN_PBR = 'BTN_THUMBR'      # Button - Joystick Right Push
     BTN_START = 'BTN_START'     # Button - Start
     BTN_SELECT = 'BTN_SELECT'   # Button - Select
+
+# Dataclass - Joystick 
+# ------------------------------
+# Member related to Controller Joystick
+@dataclass
+class _Joystick():
+    """
+    Joystick Object
+    Scales the raw Axis-Value obtained from Controller-Input
+    and compensates for Deadband
+
+    :param raw_X: Joystick X-Axis raw value
+    :param raw_Y: Joystick Y-Axis raw value
+    :param raw_min: Axis Raw Minimum value
+    :param raw_max: Axis Raw Maximum value
+    :param raw_db: Axis Raw deadband value
+    :param eu_min: Engineering Unit Minimum value
+    :param eu_max: Engineering Unit Maximum value
+    :return X: Joystick X-Axis Value (float)
+    :return Y: Joystick X-Axis Value (float)
+    """
+
+    def __init__(self, 
+                raw_X : int, 
+                raw_Y : int,
+                raw_min : int = _CONST_XBOXONE.JOY_MIN, 
+                raw_max : int = _CONST_XBOXONE.JOY_MAX,
+                raw_db : int = _CONST_XBOXONE.JOY_DB,
+                eu_min : float = -100.0 , 
+                eu_max : float = 100.0,):
+
+        # Deadband - Joystick X
+        if abs(raw_X) < abs(raw_db):
+            raw_X = 0
+
+        # Deadband - Joystick Y
+        if abs(raw_Y) < abs(raw_db):
+            raw_Y = 0
+
+        # Scale Axis Input
+        self.X = scaleAxisInput(raw_X, raw_min, raw_max, eu_min, eu_max)
+        self.Y = scaleAxisInput(raw_Y, raw_min, raw_max, eu_min, eu_max)
+
+# Dataclass - Trigger 
+# ------------------------------
+# Member related to Controller Trigger
+@dataclass
+class _Trigger():
+    """
+    Trigger Object
+    Scales the raw Axis-Value obtained from Controller-Input
+    and compensates for deadband
+    
+    :param raw_L: Trigger Right raw value
+    :param raw_R: Trigger Right raw value
+    :param raw_min: Axis Raw Minimum value
+    :param raw_max: Axis Raw Maximum value
+    :param raw_db: Axis Raw deadband value
+    :param eu_min: Engineering Unit Minimum value
+    :param eu_max: Engineering Unit Maximum value
+    :return L: Trigger Left Value (float)
+    :return R: Trigger Right Value (float)
+    """
+    
+    def __init__(self, 
+                raw_L : int, 
+                raw_R : int,
+                raw_min : int = _CONST_XBOXONE.TRG_MIN, 
+                raw_max : int = _CONST_XBOXONE.TRG_MAX,
+                raw_db : int = _CONST_XBOXONE.TRG_DB,
+                eu_min : float = 0.0 , 
+                eu_max : float = 100.0,):
+
+        # Deadband - Trigger Left
+        if abs(raw_L) < abs(raw_db):
+            raw_L = 0
+
+        # Deadband - Trigger Right
+        if abs(raw_R) < abs(raw_db):
+            raw_R = 0
+
+        # Scale Axis Input
+        self.L = scaleAxisInput(raw_L, raw_min, raw_max, eu_min, eu_max)
+        self.R = scaleAxisInput(raw_R, raw_min, raw_max, eu_min, eu_max)
+
 
 # Get Connected Controller
 # -----------------------------
@@ -163,26 +251,26 @@ def getControllerType():
 
 # Scale Axis Input Value
 # -----------------------------
-def scaleAxisInput(min : float, 
-                   max : float, 
-                   raw_value : int, 
-                   raw_min : int, 
-                   raw_max : int):
+def scaleAxisInput(raw_value : int, 
+                    raw_min : int, 
+                    raw_max : int,
+                    eu_min : float, 
+                    eu_max : float):
     """
     Scale Axis Input 
     Scale the raw Axis-Value obtained from Controller-Input
-    :param min: Minimum value
-    :param max: Maximum value
     :param raw_value: Axis raw value
     :param raw_min: Axis Raw Minimum value
     :param raw_max: Axis Raw Maximum value
+    :param eu_min: Engineering Unit Minimum value
+    :param eu_max: Engineering Unit Maximum value
     :return value: Scaled Axis Value (float)
     """
     # Scaling input-value to range: [0 , 1]
     tmp_value = (raw_value - raw_min) / (raw_max - raw_min)
 
     # Scaling input-value to range: [min , max]
-    value = tmp_value * (max - min) + min
+    value = tmp_value * (eu_max - eu_min) + eu_min
 
     # Function return
     return value

@@ -16,6 +16,9 @@ from inputs import devices
 import threading
 import controller_toolbox as ControllerToolbox
 
+# Test
+import toolbox2 as ct2
+
 # Controller Class
 # ------------------------------
 class Controller():
@@ -74,18 +77,13 @@ class Controller():
         buttonB = self.Button.DPad_Right
         buttonX = self.Button.DPad_Down
         buttonY = self.Button.DPad_Up
-        joyLeftX = self.Axis.JoystickLeft_X
-        joyLeftY = self.Axis.JoystickLeft_Y
 
-        
+        joyLeft = ControllerToolbox._Joystick(self.Axis.JoystickLeft_X, self.Axis.JoystickLeft_Y)
+        joyRight = ControllerToolbox._Joystick(self.Axis.JoystickRight_X, self.Axis.JoystickRight_Y)
 
-        buttonLB2 = self.Axis.TriggerLeft
-        buttonRB2 = self.Axis.TriggerRight
+        trigger = ControllerToolbox._Trigger(self.Axis.TriggerLeft, self.Axis.TriggerRight)
 
-        joyLeftY = ControllerToolbox.scaleAxisInput(-100, 100, joyLeftX, -32768, 32767)
-        buttonRB2 = ControllerToolbox.scaleAxisInput(0, 100, buttonLB2, 0, 255)
-
-        return [buttonA, buttonB, joyLeftX, joyLeftY, buttonX, buttonY, buttonLB2, buttonRB2]
+        return [self.Axis.JoystickLeft_X, joyLeft.X, self.Axis.JoystickLeft_Y, joyLeft.Y, trigger.L, trigger.R]
 
     # XBOX Controller Monitor
     # ------------------------------    
