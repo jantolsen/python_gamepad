@@ -16,7 +16,6 @@
 from dataclasses import dataclass, field
 from inputs import devices
 from logging import NullHandler
-import controller_toolbox as ControllerToolbox
 
 # Dataclass - Axis 
 # ------------------------------
@@ -58,63 +57,6 @@ class _ButtonData:
 
     LB2: bool = 0       # Button - Left-Back Trigger
     RB2: bool = 0       # Button - Right-Back Trigger
-    
-# Dataclass - Joystick Data
-# ------------------------------
-# Member to hold Controller Input
-@dataclass
-class _Joy_Data:
-    # Define Joystick Data members
-    X   : int = 0   # Joystick - X-Axis
-    Y   : int = 0   # Joystick - Y-Axis
-    PB  : bool = 0  # Joystick - Pushbutton
-
-# Dataclass - Directional-Pad Data
-# ------------------------------
-# Member to hold Controller Input
-@dataclass
-class _DPad_Data:
-    # Define Joystick Data members
-    L  : bool = 0   # D-Pad - Left
-    R  : bool = 0   # D-Pad - Right
-    U  : bool = 0   # D-Pad - Up
-    D  : bool = 0   # D-Pad - Down
-
-# Dataclass - Trigger Data
-# ------------------------------
-# Member to hold Controller Input
-@dataclass
-class _Trig_Data:
-    # Define Trigger Data members
-    VAL : int = 0   # Trigger - Value
-    B1  : bool = 0  # Back Bumper No. 1
-    B2  : bool = 0  # Back Bumper No. 2
-
-# Dataclass - Button Data (XBOX)
-# ------------------------------
-# Member to hold Controller Input
-@dataclass
-class _XBOX_Button_Data:
-    # Define Button Data members
-    A : bool = 0        # Button - A
-    B : bool = 0        # Button - B
-    X : bool = 0        # Button - X
-    Y : bool = 0        # Button - Y
-    Start : bool = 0    # Button - Start
-    Select : bool = 0   # Button - Select
-
-# Dataclass - Button Data (PS)
-# ------------------------------
-# Member to hold Controller Input
-@dataclass
-class _PS_Button_Data:
-    # Define Button Data members
-    Cross       : bool = 0  # Button - Cross
-    Circle      : bool = 0  # Button - Circle
-    Triangle    : bool = 0  # Button - Triangle
-    Square      : bool = 0  # Button - Square
-    Start       : bool = 0  # Button - Start
-    Select      : bool = 0  # Button - Select
 
 # Dataclass - Controller Event-Key Constants
 # ------------------------------
@@ -143,14 +85,14 @@ class _EVENTKEY:
     DPAD_R      : str = field(init=False)   # D-Pad - Right
     DPAD_U      : str = field(init=False)   # D-Pad - Up
     DPAD_D      : str = field(init=False)   # D-Pad - Down
-    BTN_S       : str = field(init=False)   # Button - South
-    BTN_E       : str = field(init=False)   # Button - East
-    BTN_W       : str = field(init=False)   # Button - West
-    BTN_N       : str = field(init=False)   # Button - North
-    BTN_LB1     : str = field(init=False)   # Button - Left-Back Bumper No. 1
-    BTN_RB1     : str = field(init=False)   # Button - Right-Back Bumper No. 1   
-    BTN_LB2     : str = field(init=False)   # Button - Left-Back Bumper No. 2
-    BTN_RB2     : str = field(init=False)   # Button - Right-Back Bumper No. 2  
+    BTN_A       : str = field(init=False)   # Button - A
+    BTN_B       : str = field(init=False)   # Button - B
+    BTN_X       : str = field(init=False)   # Button - X
+    BTN_Y       : str = field(init=False)   # Button - Y
+    BTN_LB      : str = field(init=False)   # Button - Left-Back
+    BTN_RB      : str = field(init=False)   # Button - Right-Back  
+    BTN_LB2     : str = field(init=False)   # Button - Left-Back Trigger
+    BTN_RB2     : str = field(init=False)   # Button - Right-Back Trigger  
     BTN_PBL     : str = field(init=False)   # Button - Joystick Left Push
     BTN_PBR     : str = field(init=False)   # Button - Joystick Right Push
     BTN_START   : str = field(init=False)   # Button - Start
@@ -159,7 +101,7 @@ class _EVENTKEY:
 # Dataclass - Controller Joystick Scaling Constans
 # ------------------------------
 @dataclass
-class _JOY_SCALING():
+class _JOYSCALE():
     """
     Controller Joystick Scaling Constans
     Data constants for scaling Controller Joystick values
@@ -176,7 +118,7 @@ class _JOY_SCALING():
 # Dataclass - Controller Trigger Scaling Constans
 # ------------------------------
 @dataclass
-class _TRIG_SCALING():
+class _TRIGSCALE():
     """
     Controller Trigger Scaling Constans
     Data constants for scaling Controller Trigger values
@@ -198,19 +140,19 @@ class _GAMEPAD_CONST:
     Gamepad Controller Constants:
     Dataclass for containing default constants value
     :param (optional)  _EVENTKEY:   Event-Key Constants ()
-    :param (optional) _JOY_SCALING:   Joystick Scaling Constants
-    :param (optional) _TRIG_SCALING:  Trigger Scaling Constants
+    :param (optional) _JOYSCALE:   Joystick Scaling Constants
+    :param (optional) _TRIGSCALE:  Trigger Scaling Constants
     """
     # XBOX-One Constants
-    EVENTKEY        : _EVENTKEY = field(init=False, default_factory = _EVENTKEY)         
-    JOY_SCALING     : _JOY_SCALING = field(init=False, default_factory = _JOY_SCALING)
-    TRIG_SCALING    : _TRIG_SCALING = field(init=False, default_factory = _TRIG_SCALING)
+    EVENTKEY    : _EVENTKEY = field(init=False, default_factory = _EVENTKEY)         
+    JOYSCALE    : _JOYSCALE = field(init=False, default_factory = _JOYSCALE)
+    TRIGSCALE   : _TRIGSCALE = field(init=False, default_factory = _TRIGSCALE)
 
     def __post_init__(self) -> None:
         # Initialize
         self._INIT_EVENTKEY()
-        self._INIT_JOY_SCALING()
-        self._INIT_TRIG_SCALING()
+        self._INIT_JOYSCALE()
+        self._INIT_TRIGSCALE()
     
     def _INIT_EVENTKEY(self):
         # Defining Axis Event-Key Constants
@@ -230,30 +172,30 @@ class _GAMEPAD_CONST:
         self.EVENTKEY.DPAD_R = 'BTN_DPAD_RIGHT' # D-Pad - Right
         self.EVENTKEY.DPAD_U = 'BTN_DPAD_UP'    # D-Pad - Up
         self.EVENTKEY.DPAD_D = 'BTN_DPAD_DOWN'  # D-Pad - Down
-        self.EVENTKEY.BTN_S = 'BTN_SOUTH'       # Button - A
-        self.EVENTKEY.BTN_E = 'BTN_EAST'        # Button - B
-        self.EVENTKEY.BTN_W = 'BTN_WEST'        # Button - X
-        self.EVENTKEY.BTN_N = 'BTN_NORTH'       # Button - Y
-        self.EVENTKEY.BTN_LB1 = 'BTN_TL'        # Button - Left-Back Bumper No. 1
-        self.EVENTKEY.BTN_RB1 = 'BTN_TR'        # Button - Right-Back Bumper No. 1   
-        self.EVENTKEY.BTN_LB2 = 'BTN_TL2'       # Button - Left-Back Bumper No. 2
-        self.EVENTKEY.BTN_RB2 = 'BTN_TR2'       # Button - Right-Back Bumper No. 2
+        self.EVENTKEY.BTN_A = 'BTN_SOUTH'       # Button - A
+        self.EVENTKEY.BTN_B = 'BTN_EAST'        # Button - B
+        self.EVENTKEY.BTN_X = 'BTN_WEST'        # Button - X
+        self.EVENTKEY.BTN_Y = 'BTN_NORTH'       # Button - Y
+        self.EVENTKEY.BTN_LB = 'BTN_TL'         # Button - Left-Back
+        self.EVENTKEY.BTN_RB = 'BTN_TR'         # Button - Right-Back   
+        self.EVENTKEY.BTN_LB2 = 'BTN_TL2'       # Button - Left-Back Trigger
+        self.EVENTKEY.BTN_RB2 = 'BTN_TR2'       # Button - Right-Back Trigger
 
-    def _INIT_JOY_SCALING(self):
+    def _INIT_JOYSCALE(self):
         # Defining Joystick Scaling Constants
-        self.JOY_SCALING.JOY_RAW_MIN = -32768  # Joystick Minimum Raw value
-        self.JOY_SCALING.JOY_RAW_MAX = 32767   # Joystick Maximum Raw value
-        self.JOY_SCALING.JOY_RAW_DB = 1000     # Joystick Deadband Raw value
-        self.JOY_SCALING.JOY_MIN = -100.0      # Joystick Minimum Scaling value
-        self.JOY_SCALING.JOY_MAX = 100.0       # Joystick Maximum Scaling value
+        self.JOYSCALE.JOY_RAW_MIN = -32768  # Joystick Minimum Raw value
+        self.JOYSCALE.JOY_RAW_MAX = 32767   # Joystick Maximum Raw value
+        self.JOYSCALE.JOY_RAW_DB = 1000     # Joystick Deadband Raw value
+        self.JOYSCALE.JOY_MIN = -100.0      # Joystick Minimum Scaling value
+        self.JOYSCALE.JOY_MAX = 100.0       # Joystick Maximum Scaling value
 
-    def _INIT_TRIG_SCALING(self):
+    def _INIT_TRIGSCALE(self):
         # Defining Trigger Scaling Constants
-        self.TRIG_SCALING.TRIG_RAW_MIN = 0     # Joystick Minimum Raw value
-        self.TRIG_SCALING.TRIG_RAW_MAX = 255   # Joystick Maximum Raw value
-        self.TRIG_SCALING.TRIG_RAW_DB = 0      # Joystick Deadband Raw value
-        self.TRIG_SCALING.TRIG_MIN = 0.0       # Joystick Minimum Scaling value
-        self.TRIG_SCALING.TRIG_MAX = 100.0     # Joystick Maximum Scaling value
+        self.TRIGSCALE.TRIG_RAW_MIN = 0     # Joystick Minimum Raw value
+        self.TRIGSCALE.TRIG_RAW_MAX = 255   # Joystick Maximum Raw value
+        self.TRIGSCALE.TRIG_RAW_DB = 0      # Joystick Deadband Raw value
+        self.TRIGSCALE.TRIG_MIN = 0.0       # Joystick Minimum Scaling value
+        self.TRIGSCALE.TRIG_MAX = 100.0     # Joystick Maximum Scaling value
 
 # Dataclass - XBOX One Controller Constants
 # ------------------------------
@@ -268,8 +210,8 @@ class XBOXONE_CONST(_GAMEPAD_CONST):
     def __post_init__(self) -> None:
         # Initialize
         self._INIT_EVENTKEY()
-        self._INIT_JOY_SCALING()
-        self._INIT_TRIG_SCALING()
+        self._INIT_JOYSCALE()
+        self._INIT_TRIGSCALE()
     
     # Overwrite Event-Key Constants with controller specific values
     def _INIT_EVENTKEY(self):
@@ -290,36 +232,36 @@ class XBOXONE_CONST(_GAMEPAD_CONST):
         self.EVENTKEY.DPAD_R = ''               # D-Pad - Right
         self.EVENTKEY.DPAD_U = ''               # D-Pad - Up
         self.EVENTKEY.DPAD_D = ''               # D-Pad - Down
-        self.EVENTKEY.BTN_S = 'BTN_SOUTH'       # Button - South
-        self.EVENTKEY.BTN_E = 'BTN_EAST'        # Button - East
-        self.EVENTKEY.BTN_W = 'BTN_WEST'        # Button - West
-        self.EVENTKEY.BTN_N = 'BTN_NORTH'       # Button - North
-        self.EVENTKEY.BTN_LB1 = 'BTN_TL'        # Button - Left-Back Bumper No. 1
-        self.EVENTKEY.BTN_RB1 = 'BTN_TR'        # Button - Right-Back Bumper No. 1  
-        self.EVENTKEY.BTN_LB2 = ' '             # Button - Left-Back Bumper No. 2
-        self.EVENTKEY.BTN_RB2 = ' '             # Button - Right-Back Bumper No. 2
+        self.EVENTKEY.BTN_A = 'BTN_SOUTH'       # Button - A
+        self.EVENTKEY.BTN_B = 'BTN_EAST'        # Button - B
+        self.EVENTKEY.BTN_X = 'BTN_WEST'        # Button - X
+        self.EVENTKEY.BTN_Y = 'BTN_NORTH'       # Button - Y
+        self.EVENTKEY.BTN_LB = 'BTN_TL'         # Button - Left-Back
+        self.EVENTKEY.BTN_RB = 'BTN_TR'         # Button - Right-Back   
+        self.EVENTKEY.BTN_LB2 = ' '             # Button - Left-Back Trigger
+        self.EVENTKEY.BTN_RB2 = ' '             # Button - Right-Back Trigger
         self.EVENTKEY.BTN_PBL = 'BTN_THUMBL'    # Button - Joystick Left Push
         self.EVENTKEY.BTN_PBR = 'BTN_THUMBR'    # Button - Joystick Right Push
         self.EVENTKEY.BTN_START = 'BTN_START'   # Button - Start
         self.EVENTKEY.BTN_SELECT = 'BTN_SELECT' # Button - Select
 
     # Overwrite Joystick Scaling Constants with controller specific values
-    def _INIT_JOY_SCALING(self):
+    def _INIT_JOYSCALE(self):
         # Defining Joystick Scaling Constants
-        self.JOY_SCALING.JOY_RAW_MIN = -32768  # Joystick Minimum Raw value
-        self.JOY_SCALING.JOY_RAW_MAX = 32767   # Joystick Maximum Raw value
-        self.JOY_SCALING.JOY_RAW_DB = 1000     # Joystick Deadband Raw value
-        self.JOY_SCALING.JOY_MIN = -100.0      # Joystick Minimum Scaling value
-        self.JOY_SCALING.JOY_MAX = 100.0       # Joystick Maximum Scaling value
+        self.JOYSCALE.JOY_RAW_MIN = -32768  # Joystick Minimum Raw value
+        self.JOYSCALE.JOY_RAW_MAX = 32767   # Joystick Maximum Raw value
+        self.JOYSCALE.JOY_RAW_DB = 1000     # Joystick Deadband Raw value
+        self.JOYSCALE.JOY_MIN = -100.0      # Joystick Minimum Scaling value
+        self.JOYSCALE.JOY_MAX = 100.0       # Joystick Maximum Scaling value
 
     # Overwrite Trigger Scaling Constants with controller specific values
-    def _INIT_TRIG_SCALING(self):
+    def _INIT_TRIGSCALE(self):
         # Defining Trigger Scaling Constants
-        self.TRIG_SCALING.TRIG_RAW_MIN = 0     # Joystick Minimum Raw value
-        self.TRIG_SCALING.TRIG_RAW_MAX = 255   # Joystick Maximum Raw value
-        self.TRIG_SCALING.TRIG_RAW_DB = 0      # Joystick Deadband Raw value
-        self.TRIG_SCALING.TRIG_MIN = 0.0       # Joystick Minimum Scaling value
-        self.TRIG_SCALING.TRIG_MAX = 100.0     # Joystick Maximum Scaling value
+        self.TRIGSCALE.TRIG_RAW_MIN = 0     # Joystick Minimum Raw value
+        self.TRIGSCALE.TRIG_RAW_MAX = 255   # Joystick Maximum Raw value
+        self.TRIGSCALE.TRIG_RAW_DB = 0      # Joystick Deadband Raw value
+        self.TRIGSCALE.TRIG_MIN = 0.0       # Joystick Minimum Scaling value
+        self.TRIGSCALE.TRIG_MAX = 100.0     # Joystick Maximum Scaling value
 
 # Dataclass - PS3 Controller
 # ------------------------------
@@ -334,8 +276,8 @@ class PS3_CONST(_GAMEPAD_CONST):
     def __post_init__(self) -> None:
         # Initialize
         self._INIT_EVENTKEY()
-        self._INIT_JOY_SCALING()
-        self._INIT_TRIG_SCALING()
+        self._INIT_JOYSCALE()
+        self._INIT_TRIGSCALE()
     
     # Overwrite Event-Key Constants with controller specific values
     def _INIT_EVENTKEY(self):
@@ -356,36 +298,36 @@ class PS3_CONST(_GAMEPAD_CONST):
         self.EVENTKEY.DPAD_R = 'BTN_DPAD_RIGHT' # D-Pad - Right
         self.EVENTKEY.DPAD_U = 'BTN_DPAD_UP'    # D-Pad - Up
         self.EVENTKEY.DPAD_D = 'BTN_DPAD_DOWN'  # D-Pad - Down
-        self.EVENTKEY.BTN_S = 'BTN_SOUTH'       # Button - South
-        self.EVENTKEY.BTN_E = 'BTN_EAST'        # Button - East
-        self.EVENTKEY.BTN_W = 'BTN_WEST'        # Button - West
-        self.EVENTKEY.BTN_N = 'BTN_NORTH'       # Button - North
-        self.EVENTKEY.BTN_LB1 = 'BTN_TL'        # Button - Left-Back Bumper No. 1
-        self.EVENTKEY.BTN_RB1 = 'BTN_TR'        # Button - Right-Back Bumper No. 1   
-        self.EVENTKEY.BTN_LB2 = 'BTN_TL2'       # Button - Left-Back Bumper No. 2   
-        self.EVENTKEY.BTN_RB2 = 'BTN_TR2'       # Button - Right-Back Bumper No. 2 
+        self.EVENTKEY.BTN_A = 'BTN_SOUTH'       # Button - A
+        self.EVENTKEY.BTN_B = 'BTN_EAST'        # Button - B
+        self.EVENTKEY.BTN_X = 'BTN_WEST'        # Button - X
+        self.EVENTKEY.BTN_Y = 'BTN_NORTH'       # Button - Y
+        self.EVENTKEY.BTN_LB = 'BTN_TL'         # Button - Left-Back
+        self.EVENTKEY.BTN_RB = 'BTN_TR'         # Button - Right-Back   
+        self.EVENTKEY.BTN_LB2 = 'BTN_TL2'       # Button - Left-Back Trigger
+        self.EVENTKEY.BTN_RB2 = 'BTN_TR2'       # Button - Right-Back Trigger
         self.EVENTKEY.BTN_PBL = 'BTN_THUMBL'    # Button - Joystick Left Push
         self.EVENTKEY.BTN_PBR = 'BTN_THUMBR'    # Button - Joystick Right Push
         self.EVENTKEY.BTN_START = 'BTN_START'   # Button - Start
         self.EVENTKEY.BTN_SELECT = 'BTN_SELECT' # Button - Select
 
     # Overwrite Joystick Scaling Constants with controller specific values
-    def _INIT_JOY_SCALING(self):
+    def _INIT_JOYSCALE(self):
         # Defining Joystick Scaling Constants
-        self.JOY_SCALING.JOY_RAW_MIN = -32768  # Joystick Minimum Raw value
-        self.JOY_SCALING.JOY_RAW_MAX = 32767   # Joystick Maximum Raw value
-        self.JOY_SCALING.JOY_RAW_DB = 1000     # Joystick Deadband Raw value
-        self.JOY_SCALING.JOY_MIN = -100.0      # Joystick Minimum Scaling value
-        self.JOY_SCALING.JOY_MAX = 100.0       # Joystick Maximum Scaling value
+        self.JOYSCALE.JOY_RAW_MIN = -32768  # Joystick Minimum Raw value
+        self.JOYSCALE.JOY_RAW_MAX = 32767   # Joystick Maximum Raw value
+        self.JOYSCALE.JOY_RAW_DB = 1000     # Joystick Deadband Raw value
+        self.JOYSCALE.JOY_MIN = -100.0      # Joystick Minimum Scaling value
+        self.JOYSCALE.JOY_MAX = 100.0       # Joystick Maximum Scaling value
 
     # Overwrite Trigger Scaling Constants with controller specific values
-    def _INIT_TRIG_SCALING(self):
+    def _INIT_TRIGSCALE(self):
         # Defining Trigger Scaling Constants
-        self.TRIG_SCALING.TRIG_RAW_MIN = 0     # Joystick Minimum Raw value
-        self.TRIG_SCALING.TRIG_RAW_MAX = 255   # Joystick Maximum Raw value
-        self.TRIG_SCALING.TRIG_RAW_DB = 0      # Joystick Deadband Raw value
-        self.TRIG_SCALING.TRIG_MIN = 0.0       # Joystick Minimum Scaling value
-        self.TRIG_SCALING.TRIG_MAX = 100.0     # Joystick Maximum Scaling value
+        self.TRIGSCALE.TRIG_RAW_MIN = 0     # Joystick Minimum Raw value
+        self.TRIGSCALE.TRIG_RAW_MAX = 255   # Joystick Maximum Raw value
+        self.TRIGSCALE.TRIG_RAW_DB = 0      # Joystick Deadband Raw value
+        self.TRIGSCALE.TRIG_MIN = 0.0       # Joystick Minimum Scaling value
+        self.TRIGSCALE.TRIG_MAX = 100.0     # Joystick Maximum Scaling value
 
 # Get Connected Controller
 # -----------------------------
@@ -430,19 +372,13 @@ def getControllerType():
 # ------------------------------
 def XBOX_AxisEvent(event : any, 
                    XBOXONE_CONST : XBOXONE_CONST, 
-                   JoyL : _Joy_Data,
-                   JoyR : _Joy_Data,
-                   TrigL : _Trig_Data,
-                   TrigR : _Trig_Data):
+                   axisData : _AxisData):
     """
     XBOX Controller
     Get incomming Axis-Events from Controller-Input (integer values)
     :param event: Element of Events from Connected Gamepad object
     :param XBOXONE_CONST: XBOX Controller Constants (_XBOXONE_CONST)
-    :return param JoyL: Joystick-Left-Data Dataclass (_Joy_Data)
-    :return param JoyR: Joystick-Rigth-Data Dataclass (_Joy_Data)
-    :return param JoyL: Trigger-Left-Data Dataclass (_Trig_Data)
-    :return param JoyL: Trigger-Right-Data Dataclass (_Trig_Data)
+    :return param Axis: Axis-Dataclass (_AXIS)
     """
 
     # Axis Event
@@ -451,38 +387,36 @@ def XBOX_AxisEvent(event : any,
         
         # Joystick Left - Axis X
         if event.code == XBOXONE_CONST.EVENTKEY.JOYL_X:
-            JoyL.X= event.state
+            axisData.JoyL_X = event.state
 
         # Joystick Left - Axis Y
         elif event.code == XBOXONE_CONST.EVENTKEY.JOYL_Y:
-            JoyL.Y = event.state
+            axisData.JoyL_Y = event.state
 
         # Joystick Right - Axis X
         elif event.code == XBOXONE_CONST.EVENTKEY.JOYR_X:
-            JoyR.X = event.state
+            axisData.JoyR_X = event.state
 
         # Joystick Right - Axis Y
         elif event.code == XBOXONE_CONST.EVENTKEY.JOYR_Y:
-            JoyR.Y = event.state
+            axisData.JoyR_Y = event.state
 
         # Trigger Left - Axis
         elif event.code == XBOXONE_CONST.EVENTKEY.TRIG_L:
-            TrigL.VAL = event.state
+            axisData.Trig_L = event.state
 
         # Trigger Right - Axis
         elif event.code == XBOXONE_CONST.EVENTKEY.TRIG_R:
-            TrigL.VAL = event.state
+            axisData.Trig_R = event.state
+
+    # Function return
+    return axisData
 
 # XBOX Controller - Button Event
 # ------------------------------
 def XBOX_ButtonEvent(event : any, 
-                    XBOXONE_CONST : XBOXONE_CONST, 
-                    JoyL : _Joy_Data,
-                    JoyR : _Joy_Data,
-                    TrigL : _Trig_Data,
-                    TrigR : _Trig_Data,
-                    DPad : _DPad_Data,
-                    Button : _XBOX_Button_Data):
+                     XBOXONE_CONST : XBOXONE_CONST, 
+                     buttonData : _ButtonData):
     """
     XBOX Controller
     Get incomming Button-Events from Controller-Input (bool values)
@@ -496,44 +430,44 @@ def XBOX_ButtonEvent(event : any,
     if event.ev_type == XBOXONE_CONST.EVENTKEY.BTN_EVENT:
         
         # Button - A
-        if event.code == XBOXONE_CONST.EVENTKEY.BTN_S:
-            Button.A = event.state
+        if event.code == XBOXONE_CONST.EVENTKEY.BTN_A:
+            buttonData.A = event.state
 
         # Button - B
-        elif event.code == XBOXONE_CONST.EVENTKEY.BTN_E:
-            Button.B = event.state
+        elif event.code == XBOXONE_CONST.EVENTKEY.BTN_B:
+            buttonData.B = event.state
 
         # Button - X
-        elif event.code == XBOXONE_CONST.EVENTKEY.BTN_W:
-            Button.X = event.state
+        elif event.code == XBOXONE_CONST.EVENTKEY.BTN_X:
+            buttonData.X = event.state
 
         # Button - Y
-        elif event.code == XBOXONE_CONST.EVENTKEY.BTN_N:
-            Button.Y = event.state
+        elif event.code == XBOXONE_CONST.EVENTKEY.BTN_Y:
+            buttonData.Y = event.state
 
-        # Button - Left-Back Bumper No. 1
-        elif event.code == XBOXONE_CONST.EVENTKEY.BTN_LB1:
-            TrigL.B1 = event.state
+        # Button - Left-Back
+        elif event.code == XBOXONE_CONST.EVENTKEY.BTN_LB:
+            buttonData.LB = event.state
 
-        # Button - Right-Back Bumper No. 1
-        elif event.code == XBOXONE_CONST.EVENTKEY.BTN_RB1:
-            TrigR.B1 = event.state
+        # Button - Right-Back
+        elif event.code == XBOXONE_CONST.EVENTKEY.BTN_RB:
+            buttonData.RB = event.state
 
         # Button - Joystick Left Push
         elif event.code == XBOXONE_CONST.EVENTKEY.BTN_PBL:
-            JoyL.PB = event.state
+            buttonData.PB_L = event.state
 
         # Button - Joystick Right Push
         elif event.code == XBOXONE_CONST.EVENTKEY.BTN_PBR:
-            JoyR.PB = event.state
+            buttonData.PB_R = event.state
 
         # Button - Start
         elif event.code == XBOXONE_CONST.EVENTKEY.BTN_START:
-            Button.Start = event.state
+            buttonData.Start = event.state
 
         # Button - Select
         elif event.code == XBOXONE_CONST.EVENTKEY.BTN_SELECT:
-            Button.Select = event.state
+            buttonData.Select = event.state
 
     # Axis Event
     # Special case for D-PAD and Trigger buttons
@@ -544,70 +478,67 @@ def XBOX_ButtonEvent(event : any,
             
             # Determine Left/Right by sign of state-value
             if event.state < 0:
-                DPad.L = 1
+                buttonData.DPad_L = 1
 
             elif event.state > 0:
-                DPad.R = 1
+                buttonData.DPad_R = 1
 
             # Reset D-PAD - Left / Right values
             else:
-                DPad.L = 0
-                DPad.R = 0
+                buttonData.DPad_L = 0
+                buttonData.DPad_R = 0
             
         # D-PAD - Up / Down
         elif event.code == XBOXONE_CONST.EVENTKEY.DPAD_Y:
 
             # Determine Up/Down by sign of state-value
             if event.state < 0:
-                DPad.U = 1
+                buttonData.DPad_U = 1
 
             elif event.state > 0:
-                DPad.D = 1
+                buttonData.DPad_D = 1
 
             # Reset D-PAD - Up / Down values
             else:
-                DPad.U = 0
-                DPad.D = 0
+                buttonData.DPad_U = 0
+                buttonData.DPad_D = 0
 
-        # Button - Left-Back Bumper No. 2  
+        # Button - Left-Back Trigger
         elif event.code == XBOXONE_CONST.EVENTKEY.TRIG_L:
 
             # Determine if active
             if event.state > 0:
-                TrigL.B2 = 1
+                buttonData.LB2 = 1
 
-            # Reset Left-Back Bumper No. 2  
+            # Reset Left-Back Trigger
             else:
-                TrigL.B2 = 0
+                buttonData.LB2 = 0
 
-        # Button - Right-Back Bumper No. 2
+        # Button - Right-Back Trigger
         elif event.code == XBOXONE_CONST.EVENTKEY.TRIG_R:
 
             # Determine if active
             if event.state > 0:
-                TrigR.B2 = 1
+                buttonData.RB2 = 1
 
-            # Reset Right-Back Bumper No. 2
+            # Reset Left-Back Trigger
             else:
-                TrigR.B2 = 0
+                buttonData.RB2 = 0
+
+    # Function return
+    return buttonData
 
 # PS3 Controller - Axis Event
 # ------------------------------
 def PS3_AxisEvent(event : any, 
                    PS3_CONST : PS3_CONST, 
-                   JoyL : _Joy_Data,
-                   JoyR : _Joy_Data,
-                   TrigL : _Trig_Data,
-                   TrigR : _Trig_Data):
+                   axisData : _AxisData):
     """
     PS3 Controller
     Get incomming Axis-Events from Controller-Input (integer values)
     :param event: Element of Events from Connected Gamepad object
-    :param XBOXONE_CONST: XBOX Controller Constants (_XBOXONE_CONST)
-    :return param JoyL: Joystick-Left-Data Dataclass (_Joy_Data)
-    :return param JoyR: Joystick-Rigth-Data Dataclass (_Joy_Data)
-    :return param JoyL: Trigger-Left-Data Dataclass (_Trig_Data)
-    :return param JoyL: Trigger-Right-Data Dataclass (_Trig_Data)
+    :param PS3_CONST: PS3 Controller Constants (_PS3_CONST)
+    :return param Axis: Axis-Dataclass (_AXIS)
     """
 
     # Axis Event
@@ -616,38 +547,36 @@ def PS3_AxisEvent(event : any,
         
         # Joystick Left - Axis X
         if event.code == PS3_CONST.EVENTKEY.JOYL_X:
-            JoyL.X = event.state
+            axisData.JoyL_X = event.state
 
         # Joystick Left - Axis Y
         elif event.code == PS3_CONST.EVENTKEY.JOYL_Y:
-            JoyL.Y = event.state
+            axisData.JoyL_Y = event.state
 
         # Joystick Right - Axis X
         elif event.code == PS3_CONST.EVENTKEY.JOYR_X:
-            JoyR.X = event.state
+            axisData.JoyR_X = event.state
 
         # Joystick Right - Axis Y
         elif event.code == PS3_CONST.EVENTKEY.JOYR_Y:
-            JoyR.Y = event.state
+            axisData.JoyR_Y = event.state
 
         # Trigger Left - Axis
         elif event.code == PS3_CONST.EVENTKEY.TRIG_L:
-            TrigL.VAL = event.state
+            axisData.Trig_L = event.state
 
         # Trigger Right - Axis
         elif event.code == PS3_CONST.EVENTKEY.TRIG_R:
-            TrigR.VAL = event.state
+            axisData.Trig_R = event.state
+
+    # Function return
+    return axisData
 
 # PS3 Controller - Button Event
 # ------------------------------
 def PS3_ButtonEvent(event : any, 
-                    PS3_CONST : PS3_CONST, 
-                    JoyL : _Joy_Data,
-                    JoyR : _Joy_Data,
-                    TrigL : _Trig_Data,
-                    TrigR : _Trig_Data,
-                    DPad : _DPad_Data,
-                    Button : _PS_Button_Data):
+                     PS3_CONST : PS3_CONST, 
+                     buttonData : _ButtonData):
     """
     PS3 Controller
     Get incomming Button-Events from Controller-Input (bool values)
@@ -660,69 +589,72 @@ def PS3_ButtonEvent(event : any,
     # Incomming Button-Input from Controller (bool values)
     if event.ev_type == PS3_CONST.EVENTKEY.BTN_EVENT:
         
-        # Button - Cross
-        if event.code == PS3_CONST.EVENTKEY.BTN_S:
-            Button.Cross = event.state
+        # Button - A
+        if event.code == PS3_CONST.EVENTKEY.BTN_A:
+            buttonData.A = event.state
 
-        # Button - Circle
-        elif event.code == PS3_CONST.EVENTKEY.BTN_E:
-            Button.Circle = event.state
+        # Button - B
+        elif event.code == PS3_CONST.EVENTKEY.BTN_B:
+            buttonData.B = event.state
 
-        # Button - Square
-        elif event.code == PS3_CONST.EVENTKEY.BTN_W:
-            Button.Square = event.state
+        # Button - X
+        elif event.code == PS3_CONST.EVENTKEY.BTN_X:
+            buttonData.X = event.state
 
-        # Button - Triangle
-        elif event.code == PS3_CONST.EVENTKEY.BTN_N:
-            Button.Triangle = event.state
+        # Button - Y
+        elif event.code == PS3_CONST.EVENTKEY.BTN_Y:
+            buttonData.Y = event.state
 
-        # Button - Left-Back Bumper No. 1
-        elif event.code == PS3_CONST.EVENTKEY.BTN_LB1:
-            TrigL.B1 = event.state
+        # Button - Left-Back
+        elif event.code == PS3_CONST.EVENTKEY.BTN_LB:
+            buttonData.LB = event.state
 
-        # Button - Right-Back Bumper No. 1 
-        elif event.code == PS3_CONST.EVENTKEY.BTN_RB1:
-            TrigR.B1 = event.state
+        # Button - Right-Back
+        elif event.code == PS3_CONST.EVENTKEY.BTN_RB:
+            buttonData.RB = event.state
 
         # Button - Joystick Left Push
         elif event.code == PS3_CONST.EVENTKEY.BTN_PBL:
-            JoyL.PB = event.state
+            buttonData.PB_L = event.state
 
         # Button - Joystick Right Push
         elif event.code == PS3_CONST.EVENTKEY.BTN_PBR:
-            JoyR.PB = event.state
+            buttonData.PB_R = event.state
 
         # Button - Start
         elif event.code == PS3_CONST.EVENTKEY.BTN_START:
-            Button.Start = event.state
+            buttonData.Start = event.state
 
         # Button - Select
         elif event.code == PS3_CONST.EVENTKEY.BTN_SELECT:
-            Button.Select = event.state
+            buttonData.Select = event.state
 
         # D-PAD - Left
         if event.code == PS3_CONST.EVENTKEY.DPAD_L:
-            DPad.L = event.state
+            buttonData.DPad_L = event.state
 
         # D-PAD - Right
         elif event.code == PS3_CONST.EVENTKEY.DPAD_R:
-            DPad.R = event.state
+            buttonData.DPad_R = event.state
 
         # D-PAD - Up
         elif event.code == PS3_CONST.EVENTKEY.DPAD_U:
-            DPad.U = event.state
+            buttonData.DPad_U = event.state
 
         # D-PAD - Down
         elif event.code == PS3_CONST.EVENTKEY.DPAD_D:
-            DPad.D= event.state
+            buttonData.DPad_D = event.state
 
-        # Button - Left-Back Bumper No. 2 
+        # Button - Left-Back Trigger
         elif event.code == PS3_CONST.EVENTKEY.BTN_LB2:
-            TrigL.B2 = event.state
+            buttonData.LB2 = event.state
 
-        # Button - Right-Back Bumper No. 2 
+        # Button - Right-Back Trigger
         elif event.code == PS3_CONST.EVENTKEY.BTN_RB2:
-            TrigR.B2 = event.state
+            buttonData.RB2 = event.state
+
+    # Function return
+    return buttonData
 
 # Scale Input Value
 # -----------------------------
@@ -803,7 +735,7 @@ def calcMinMaxScaling_DB(raw_value : int,
 # Scale Joystick Input Value with Deadband
 # -----------------------------
 def scaleJoystickInput(raw_value : int,
-                        JOY_SCALE : _JOY_SCALING):
+                        JOY_SCALE : _JOYSCALE):
     """
     Rescale the raw Joystick input value from range [raw_min, raw_max] to a desired range [min, max]
     with neglecting Joystick Deadband 
@@ -824,7 +756,7 @@ def scaleJoystickInput(raw_value : int,
 # Scale Trigger Input Value with Deadband
 # -----------------------------
 def scaleTriggerInput(raw_value : int,
-                        TRIG_SCALE : _TRIG_SCALING):
+                    TRIG_SCALE : _TRIGSCALE):
     """
     Rescale the raw Trigger input value from range [raw_min, raw_max] to a desired range [min, max]
     with neglecting Trigger Deadband 
@@ -841,116 +773,3 @@ def scaleTriggerInput(raw_value : int,
                                         TRIG_SCALE.TRIG_MAX)
     
     return trigger_value
-
-# Joystick Class
-# -----------------------------
-# Based on Joystick-Data, assign values to members of Joystick Class
-# with correct scaling obtained from Gamepad-Constant
-class Joystick():
-    """
-    Jostick Class:
-    Assign values to Joystick members based on incomming Joystick-Data
-    Joystick values are calculated with correct scaling with data from Gamepad-Constants
-    :param GAMEPAD_CONST: Controller Constants (_GAMEPAD_CONST)
-    :param JoyData: Joystick Data (_Joy_Data)
-    """
-    # Class Constructor
-    def __init__(self, GAMEPAD_CONST : _GAMEPAD_CONST, JoyData : _Joy_Data):
-
-        # Class Input(s):
-        self.X_raw = JoyData.X
-        self.Y_raw = JoyData.Y
-        self.PB = JoyData.PB
-        self.JOY_SCALING = GAMEPAD_CONST.JOY_SCALING
-
-        # Class Variables
-        self.X = 0.0
-        self.Y = 0.0
-        self.PB = 0
-
-        # Update Joystick Values
-        self.updateValues(JoyData)
-
-    # Update Joystick Values based on new Input data
-    def updateValues(self, JoyData : _Joy_Data):
-        # Update Class Inputs
-        self.X_raw = JoyData.X
-        self.Y_raw = JoyData.Y
-        self.PB = JoyData.PB
-
-        # Get Joystick Values
-        self.getPushbuttonValue()
-        self.getAxisValues()
-
-    # Get Joystick Pushbutton Value
-    def getPushbuttonValue(self):
-        
-        # Function Return
-        return self.PB
-
-    # Get Joystick Axis-X Value
-    def getAxisXValue(self):
-        # Scale Axis Value
-        self.X = scaleJoystickInput(self.X_raw, self.JOY_SCALING)
-
-        # Function Return
-        return self.X    
-
-    # Get Joystick Axis-Y Value
-    def getAxisYValue(self):
-        # Scale Axis Value
-        self.Y = scaleJoystickInput(self.Y_raw, self.JOY_SCALING)
-
-        # Function Return
-        return self.Y   
-    
-    # Get Joystick Axis Values
-    def getAxisValues(self):
-        # Call internal get axis value
-        self.X = self.getAxisXValue()
-        self.Y = self.getAxisYValue()
-
-        # Function Return
-        return [self.X, self.Y]
-
-# Main Function
-# ------------------------------   
-if __name__ == '__main__':
-    # xbox_constants = _XBOXONE_CONST(_EVENTKEY, _JOYSCALE, _TRIG_SCALING)
-    # xbox_constants = _XBOXONE_CONST()
-    
-    # xbox_constants.JOYSCALE.JOY_RAW_DB = 3000
-    # # print(xboxOneConstants)
-    # print(xbox_constants)
-    # print(xbox_constants.JOYSCALE.JOY_RAW_MAX)
-    # print(xbox_constants.JOYSCALE.JOY_RAW_DB)
-    # print('\n')
-
-    xboxConst = XBOXONE_CONST()
-    joyL_data = _Joy_Data()
-
-
-
-    print(xboxConst)
-    print(xboxConst.JOY_SCALING.JOY_RAW_DB)
-    print('\n')
-
-    xboxConst.JOY_SCALING.JOY_RAW_DB = 5000
-    joyL_data.X = 23185
-
-    JoyL = Joystick(xboxConst, joyL_data)
-    # JoyL.updateValues(joyL_data)
-
-    print('Joystick:')
-    print(JoyL)
-    print("X-Axis: ", JoyL.X, " Raw Value: ", JoyL.X_raw)
-    print("Y-Axis: ", JoyL.Y, " Raw Value: ", JoyL.Y_raw)
-    print('\n')
-
-    joyL_data.X = -23185
-    JoyL.updateValues(joyL_data)
-
-    print("X-Axis: ", JoyL.X, " Raw Value: ", JoyL.X_raw)
-    print("Y-Axis: ", JoyL.Y, " Raw Value: ", JoyL.Y_raw)
-    print('\n')
-

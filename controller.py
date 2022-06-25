@@ -15,9 +15,7 @@ from inputs import get_gamepad
 from inputs import devices
 import threading
 import controller_toolbox as ControllerToolbox
-
-# Test
-import toolbox2 as ct2
+# import controller_toolbox2 as ControllerToolbox2
 
 # Controller Class
 # ------------------------------
@@ -29,8 +27,8 @@ class Controller():
 
         # Define Controller Members
         # (based on Dataclasses from Controller-Toolbox)
-        self.Axis = ControllerToolbox._Axis()
-        self.Button = ControllerToolbox._Button()
+        self.Axis = ControllerToolbox._AxisData()
+        self.Button = ControllerToolbox._ButtonData()
 
         # Search for connected controller
         # (using ControllerToolbox function)
@@ -73,17 +71,32 @@ class Controller():
     # ------------------------------
     def read(self):
 
-        buttonA = self.Button.DPad_Left
-        buttonB = self.Button.DPad_Right
-        buttonX = self.Button.DPad_Down
-        buttonY = self.Button.DPad_Up
+        # buttonA = self.Button.DPad_Left
+        # buttonB = self.Button.DPad_Right
+        # buttonX = self.Button.DPad_Down
+        # buttonY = self.Button.DPad_Up
 
-        joyLeft = ControllerToolbox._Joystick(self.Axis.JoystickLeft_X, self.Axis.JoystickLeft_Y)
-        joyRight = ControllerToolbox._Joystick(self.Axis.JoystickRight_X, self.Axis.JoystickRight_Y)
+        # joyLeft = ControllerToolbox._Joystick(self.Axis.JoystickLeft_X, self.Axis.JoystickLeft_Y)
+        # joyRight = ControllerToolbox._Joystick(self.Axis.JoystickRight_X, self.Axis.JoystickRight_Y)
 
-        trigger = ControllerToolbox._Trigger(self.Axis.TriggerLeft, self.Axis.TriggerRight)
+        # trigger = ControllerToolbox._Trigger(self.Axis.TriggerLeft, self.Axis.TriggerRight)
 
-        return [self.Axis.JoystickLeft_X, joyLeft.X, self.Axis.JoystickLeft_Y, joyLeft.Y, trigger.L, trigger.R]
+        # return [self.Axis.JoystickLeft_X, joyLeft.X, self.Axis.JoystickLeft_Y, joyLeft.Y, trigger.L, trigger.R]
+
+        joyLeftX_DB = ControllerToolbox.calcMinMaxScaling_DB(self.Axis.JoyL_X,
+                                                          -32768,
+                                                          32767,
+                                                          5000,
+                                                          -100.0,
+                                                          100.0)
+
+        joyLeftX = ControllerToolbox.calcMinMaxScaling(self.Axis.JoyL_X,
+                                                          -32768,
+                                                          32767,
+                                                          -100.0,
+                                                          100.0)
+
+        return[self.Axis.JoyL_X, joyLeftX_DB, joyLeftX]
 
     # XBOX Controller Monitor
     # ------------------------------    
