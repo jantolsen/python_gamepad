@@ -29,8 +29,8 @@ class _AxisData:
     JoyL_Y : float = 0.0    # Joystick Left - Axis Y
     JoyR_X : float = 0.0    # Joystick Right - Axis X
     JoyR_Y : float = 0.0    # Joystick Right - Axis Y
-    Trig_L : float = 0.0     # Trigger Left - Axis
-    Trig_R : float = 0.0     # Trigger Left - Axis
+    Trig_L : float = 0.0    # Trigger Left - Axis
+    Trig_R : float = 0.0    # Trigger Left - Axis
 
 # Dataclass - Buttons 
 # ------------------------------
@@ -39,12 +39,11 @@ class _AxisData:
 class _ButtonData:
     
     # Declare Button members
-    A : bool = 0        # Button - A
-    B : bool = 0        # Button - B
-    X : bool = 0        # Button - X
-    Y : bool = 0        # Button - Y
-    LB: bool = 0        # Button - Left-Back
-    RB: bool = 0        # Button - Right-Back
+    S : bool = 0        # Button - South
+    E : bool = 0        # Button - East
+    W : bool = 0        # Button - West
+    N : bool = 0        # Button - North
+    
     Start : bool = 0    # Button - Start
     Select : bool = 0   # Button - Select
 
@@ -56,14 +55,16 @@ class _ButtonData:
     DPad_U : bool = 0   # D-Pad - Up
     DPad_D : bool = 0   # D-Pad - Down
 
-    LB2: bool = 0       # Button - Left-Back Trigger
-    RB2: bool = 0       # Button - Right-Back Trigger
-    
+    LB1: bool = 0       # Button - Left-Back Bumper No. 1
+    RB1: bool = 0       # Button - Right-Back Bumper No. 1
+    LB2: bool = 0       # Button - Left-Back Bumper No. 2
+    RB2: bool = 0       # Button - Right-Back Bumper No. 2
+
 # Dataclass - Joystick Data
 # ------------------------------
 # Member to hold Controller Input
 @dataclass
-class _Joy_Data:
+class _JoyData:
     # Define Joystick Data members
     X   : int = 0   # Joystick - X-Axis
     Y   : int = 0   # Joystick - Y-Axis
@@ -73,7 +74,7 @@ class _Joy_Data:
 # ------------------------------
 # Member to hold Controller Input
 @dataclass
-class _DPad_Data:
+class _DPadData:
     # Define Joystick Data members
     L  : bool = 0   # D-Pad - Left
     R  : bool = 0   # D-Pad - Right
@@ -84,7 +85,7 @@ class _DPad_Data:
 # ------------------------------
 # Member to hold Controller Input
 @dataclass
-class _Trig_Data:
+class _TrigData:
     # Define Trigger Data members
     VAL : int = 0   # Trigger - Value
     B1  : bool = 0  # Back Bumper No. 1
@@ -94,7 +95,7 @@ class _Trig_Data:
 # ------------------------------
 # Member to hold Controller Input
 @dataclass
-class _XBOX_Button_Data:
+class _XBOX_ButtonData:
     # Define Button Data members
     A : bool = 0        # Button - A
     B : bool = 0        # Button - B
@@ -107,7 +108,7 @@ class _XBOX_Button_Data:
 # ------------------------------
 # Member to hold Controller Input
 @dataclass
-class _PS_Button_Data:
+class _PS_ButtonData:
     # Define Button Data members
     Cross       : bool = 0  # Button - Cross
     Circle      : bool = 0  # Button - Circle
@@ -430,10 +431,11 @@ def getControllerType():
 # ------------------------------
 def XBOX_AxisEvent(event : any, 
                    XBOXONE_CONST : XBOXONE_CONST, 
-                   JoyL : _Joy_Data,
-                   JoyR : _Joy_Data,
-                   TrigL : _Trig_Data,
-                   TrigR : _Trig_Data):
+                   JoyL : _JoyData,
+                   JoyR : _JoyData,
+                   TrigL : _TrigData,
+                   TrigR : _TrigData,
+                   AxisData : _AxisData):
     """
     XBOX Controller
     Get incomming Axis-Events from Controller-Input (integer values)
@@ -451,38 +453,45 @@ def XBOX_AxisEvent(event : any,
         
         # Joystick Left - Axis X
         if event.code == XBOXONE_CONST.EVENTKEY.JOYL_X:
-            JoyL.X= event.state
+            JoyL.X = event.state
+            AxisData.JoyL_X = event.state
 
         # Joystick Left - Axis Y
         elif event.code == XBOXONE_CONST.EVENTKEY.JOYL_Y:
             JoyL.Y = event.state
+            AxisData.JoyL_Y = event.state
 
         # Joystick Right - Axis X
         elif event.code == XBOXONE_CONST.EVENTKEY.JOYR_X:
             JoyR.X = event.state
+            AxisData.JoyR_X = event.state
 
         # Joystick Right - Axis Y
         elif event.code == XBOXONE_CONST.EVENTKEY.JOYR_Y:
             JoyR.Y = event.state
+            AxisData.JoyR_Y = event.state
 
         # Trigger Left - Axis
         elif event.code == XBOXONE_CONST.EVENTKEY.TRIG_L:
             TrigL.VAL = event.state
+            AxisData.Trig_L = event.state
 
         # Trigger Right - Axis
         elif event.code == XBOXONE_CONST.EVENTKEY.TRIG_R:
             TrigL.VAL = event.state
+            AxisData.Trig_R = event.state
 
 # XBOX Controller - Button Event
 # ------------------------------
 def XBOX_ButtonEvent(event : any, 
                     XBOXONE_CONST : XBOXONE_CONST, 
-                    JoyL : _Joy_Data,
-                    JoyR : _Joy_Data,
-                    TrigL : _Trig_Data,
-                    TrigR : _Trig_Data,
-                    DPad : _DPad_Data,
-                    Button : _XBOX_Button_Data):
+                    JoyL : _JoyData,
+                    JoyR : _JoyData,
+                    TrigL : _TrigData,
+                    TrigR : _TrigData,
+                    DPad : _DPadData,
+                    Button : _XBOX_ButtonData,
+                    ButtonData : _ButtonData):
     """
     XBOX Controller
     Get incomming Button-Events from Controller-Input (bool values)
@@ -498,42 +507,52 @@ def XBOX_ButtonEvent(event : any,
         # Button - A
         if event.code == XBOXONE_CONST.EVENTKEY.BTN_S:
             Button.A = event.state
+            ButtonData.S = event.state
 
         # Button - B
         elif event.code == XBOXONE_CONST.EVENTKEY.BTN_E:
             Button.B = event.state
+            ButtonData.E = event.state
 
         # Button - X
         elif event.code == XBOXONE_CONST.EVENTKEY.BTN_W:
             Button.X = event.state
+            ButtonData.W = event.state
 
         # Button - Y
         elif event.code == XBOXONE_CONST.EVENTKEY.BTN_N:
             Button.Y = event.state
+            ButtonData.N = event.state
 
         # Button - Left-Back Bumper No. 1
         elif event.code == XBOXONE_CONST.EVENTKEY.BTN_LB1:
             TrigL.B1 = event.state
+            ButtonData.LB1 = event.state
 
         # Button - Right-Back Bumper No. 1
         elif event.code == XBOXONE_CONST.EVENTKEY.BTN_RB1:
             TrigR.B1 = event.state
+            ButtonData.RB1 = event.state
 
         # Button - Joystick Left Push
         elif event.code == XBOXONE_CONST.EVENTKEY.BTN_PBL:
             JoyL.PB = event.state
+            ButtonData.PB_L = event.state
 
         # Button - Joystick Right Push
         elif event.code == XBOXONE_CONST.EVENTKEY.BTN_PBR:
             JoyR.PB = event.state
+            ButtonData.PB_R = event.state
 
         # Button - Start
         elif event.code == XBOXONE_CONST.EVENTKEY.BTN_START:
             Button.Start = event.state
+            ButtonData.Start = event.state
 
         # Button - Select
         elif event.code == XBOXONE_CONST.EVENTKEY.BTN_SELECT:
             Button.Select = event.state
+            ButtonData.Select = event.state
 
     # Axis Event
     # Special case for D-PAD and Trigger buttons
@@ -545,14 +564,18 @@ def XBOX_ButtonEvent(event : any,
             # Determine Left/Right by sign of state-value
             if event.state < 0:
                 DPad.L = 1
+                ButtonData.DPad_L = event.state
 
             elif event.state > 0:
                 DPad.R = 1
+                ButtonData.DPad_R = event.state
 
             # Reset D-PAD - Left / Right values
             else:
                 DPad.L = 0
                 DPad.R = 0
+                ButtonData.DPad_L = event.state
+                ButtonData.DPad_R = event.state
             
         # D-PAD - Up / Down
         elif event.code == XBOXONE_CONST.EVENTKEY.DPAD_Y:
@@ -560,14 +583,18 @@ def XBOX_ButtonEvent(event : any,
             # Determine Up/Down by sign of state-value
             if event.state < 0:
                 DPad.U = 1
+                ButtonData.DPad_U = event.state
 
             elif event.state > 0:
                 DPad.D = 1
+                ButtonData.DPad_D = event.state
 
             # Reset D-PAD - Up / Down values
             else:
                 DPad.U = 0
                 DPad.D = 0
+                ButtonData.DPad_U = event.state
+                ButtonData.DPad_D = event.state
 
         # Button - Left-Back Bumper No. 2  
         elif event.code == XBOXONE_CONST.EVENTKEY.TRIG_L:
@@ -575,10 +602,12 @@ def XBOX_ButtonEvent(event : any,
             # Determine if active
             if event.state > 0:
                 TrigL.B2 = 1
+                ButtonData.LB2 = event.state
 
             # Reset Left-Back Bumper No. 2  
             else:
                 TrigL.B2 = 0
+                ButtonData.LB2 = event.state
 
         # Button - Right-Back Bumper No. 2
         elif event.code == XBOXONE_CONST.EVENTKEY.TRIG_R:
@@ -586,19 +615,22 @@ def XBOX_ButtonEvent(event : any,
             # Determine if active
             if event.state > 0:
                 TrigR.B2 = 1
+                ButtonData.RB2 = event.state
 
             # Reset Right-Back Bumper No. 2
             else:
                 TrigR.B2 = 0
+                ButtonData.RB2 = event.state
 
 # PS3 Controller - Axis Event
 # ------------------------------
 def PS3_AxisEvent(event : any, 
                    PS3_CONST : PS3_CONST, 
-                   JoyL : _Joy_Data,
-                   JoyR : _Joy_Data,
-                   TrigL : _Trig_Data,
-                   TrigR : _Trig_Data):
+                   JoyL : _JoyData,
+                   JoyR : _JoyData,
+                   TrigL : _TrigData,
+                   TrigR : _TrigData,
+                   AxisData : _AxisData):
     """
     PS3 Controller
     Get incomming Axis-Events from Controller-Input (integer values)
@@ -617,37 +649,44 @@ def PS3_AxisEvent(event : any,
         # Joystick Left - Axis X
         if event.code == PS3_CONST.EVENTKEY.JOYL_X:
             JoyL.X = event.state
+            AxisData.JoyL_X = event.state
 
         # Joystick Left - Axis Y
         elif event.code == PS3_CONST.EVENTKEY.JOYL_Y:
             JoyL.Y = event.state
+            AxisData.JoyL_Y = event.state
 
         # Joystick Right - Axis X
         elif event.code == PS3_CONST.EVENTKEY.JOYR_X:
             JoyR.X = event.state
+            AxisData.JoyR_X = event.state
 
         # Joystick Right - Axis Y
         elif event.code == PS3_CONST.EVENTKEY.JOYR_Y:
             JoyR.Y = event.state
+            AxisData.JoyR_Y = event.state
 
         # Trigger Left - Axis
         elif event.code == PS3_CONST.EVENTKEY.TRIG_L:
             TrigL.VAL = event.state
+            AxisData.Trig_L = event.state
 
         # Trigger Right - Axis
         elif event.code == PS3_CONST.EVENTKEY.TRIG_R:
             TrigR.VAL = event.state
+            AxisData.Trig_R = event.state
 
 # PS3 Controller - Button Event
 # ------------------------------
 def PS3_ButtonEvent(event : any, 
                     PS3_CONST : PS3_CONST, 
-                    JoyL : _Joy_Data,
-                    JoyR : _Joy_Data,
-                    TrigL : _Trig_Data,
-                    TrigR : _Trig_Data,
-                    DPad : _DPad_Data,
-                    Button : _PS_Button_Data):
+                    JoyL : _JoyData,
+                    JoyR : _JoyData,
+                    TrigL : _TrigData,
+                    TrigR : _TrigData,
+                    DPad : _DPadData,
+                    Button : _PS_ButtonData,
+                    ButtonData : _ButtonData):
     """
     PS3 Controller
     Get incomming Button-Events from Controller-Input (bool values)
@@ -663,66 +702,82 @@ def PS3_ButtonEvent(event : any,
         # Button - Cross
         if event.code == PS3_CONST.EVENTKEY.BTN_S:
             Button.Cross = event.state
+            ButtonData.S = event.state
 
         # Button - Circle
         elif event.code == PS3_CONST.EVENTKEY.BTN_E:
             Button.Circle = event.state
+            ButtonData.E = event.state
 
         # Button - Square
         elif event.code == PS3_CONST.EVENTKEY.BTN_W:
             Button.Square = event.state
+            ButtonData.W = event.state
 
         # Button - Triangle
         elif event.code == PS3_CONST.EVENTKEY.BTN_N:
             Button.Triangle = event.state
+            ButtonData.N = event.state
 
         # Button - Left-Back Bumper No. 1
         elif event.code == PS3_CONST.EVENTKEY.BTN_LB1:
             TrigL.B1 = event.state
+            ButtonData.LB1 = event.state
 
         # Button - Right-Back Bumper No. 1 
         elif event.code == PS3_CONST.EVENTKEY.BTN_RB1:
             TrigR.B1 = event.state
+            ButtonData.RB1 = event.state
 
         # Button - Joystick Left Push
         elif event.code == PS3_CONST.EVENTKEY.BTN_PBL:
             JoyL.PB = event.state
+            ButtonData.PB_L = event.state
 
         # Button - Joystick Right Push
         elif event.code == PS3_CONST.EVENTKEY.BTN_PBR:
             JoyR.PB = event.state
+            ButtonData.PB_R = event.state
 
         # Button - Start
         elif event.code == PS3_CONST.EVENTKEY.BTN_START:
             Button.Start = event.state
+            ButtonData.Start = event.state
 
         # Button - Select
         elif event.code == PS3_CONST.EVENTKEY.BTN_SELECT:
             Button.Select = event.state
+            ButtonData.Select = event.state
 
         # D-PAD - Left
         if event.code == PS3_CONST.EVENTKEY.DPAD_L:
             DPad.L = event.state
+            ButtonData.DPad_L = event.state
 
         # D-PAD - Right
         elif event.code == PS3_CONST.EVENTKEY.DPAD_R:
             DPad.R = event.state
+            ButtonData.DPad_R = event.state
 
         # D-PAD - Up
         elif event.code == PS3_CONST.EVENTKEY.DPAD_U:
             DPad.U = event.state
+            ButtonData.DPad_U = event.state
 
         # D-PAD - Down
         elif event.code == PS3_CONST.EVENTKEY.DPAD_D:
             DPad.D= event.state
+            ButtonData.DPad_D = event.state
 
         # Button - Left-Back Bumper No. 2 
         elif event.code == PS3_CONST.EVENTKEY.BTN_LB2:
             TrigL.B2 = event.state
+            ButtonData.LB2 = event.state
 
         # Button - Right-Back Bumper No. 2 
         elif event.code == PS3_CONST.EVENTKEY.BTN_RB2:
             TrigR.B2 = event.state
+            ButtonData.RB2 = event.state
 
 # Scale Input Value
 # -----------------------------
@@ -855,7 +910,7 @@ class Joystick():
     :param JoyData: Joystick Data (_Joy_Data)
     """
     # Class Constructor
-    def __init__(self, GAMEPAD_CONST : _GAMEPAD_CONST, JoyData : _Joy_Data):
+    def __init__(self, GAMEPAD_CONST : _GAMEPAD_CONST, JoyData : _JoyData):
 
         # Class Input(s):
         self.X_raw = JoyData.X
@@ -872,7 +927,7 @@ class Joystick():
         self.updateValues(JoyData)
 
     # Update Joystick Values based on new Input data
-    def updateValues(self, JoyData : _Joy_Data):
+    def updateValues(self, JoyData : _JoyData):
         # Update Class Inputs
         self.X_raw = JoyData.X
         self.Y_raw = JoyData.Y
@@ -927,7 +982,7 @@ if __name__ == '__main__':
     # print('\n')
 
     xboxConst = XBOXONE_CONST()
-    joyL_data = _Joy_Data()
+    joyL_data = _JoyData()
 
 
 
