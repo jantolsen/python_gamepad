@@ -11,11 +11,20 @@
 
 # Import packages
 from logging import NullHandler
+from turtle import left
 from inputs import get_gamepad
 from inputs import devices
 import threading
+
+# Import Class-Files and Toolbox
 import controller_toolbox as ControllerToolbox
-# import controller_toolbox2 as ControllerToolbox2
+
+# Import Class Files
+from controller_joystick import Joystick as Joystick
+from controller_trigger import Trigger as Trigger
+from controller_dpad import DPad as DPad
+from controller_button import XboxButton as XboxButton
+from controller_button import PSButton as PSButton
 
 # Controller Class
 # ------------------------------
@@ -27,9 +36,24 @@ class Controller():
 
         # Define Controller Members
         # (based on Dataclasses from Controller-Toolbox)
-        self.Axis = ControllerToolbox._AxisData()
-        self.Button = ControllerToolbox._ButtonData()
+        self.GenericAxis = ControllerToolbox.GenericAxisData()
+        self.GenericButton = ControllerToolbox.GenericButtonData()
 
+        # Constants
+        self.XBOX_CONST = ControllerToolbox.XBOXONE_CONST()
+        self.PS3_CONST = ControllerToolbox.PS3_CONST()
+        
+        # Define Empty Classes
+        # self.JoyLeft = object()
+        # self.JoyRight = object()
+        # self.JoyLeft = object()
+        # self.JoyRight = object()
+        # self.TrigLeft = object()
+        # self.TrigRight = object()
+        # self.DPad = object()
+        # self.XboxButton = object()
+        # self.PSButton = object()
+        
         # Search for connected controller
         # (using ControllerToolbox function)
         self.gamepad = ControllerToolbox.getController()
@@ -46,6 +70,15 @@ class Controller():
 
         # XBOX Controller
         if self.gamepad_type == 'XBOX':
+            
+            # Define Controller Classes
+            self.JoyLeft = Joystick(self.XBOX_CONST)
+            self.JoyRight = Joystick(self.XBOX_CONST)
+            self.TrigLeft = Trigger(self.XBOX_CONST)
+            self.TrigRight = Trigger(self.XBOX_CONST)
+            self.XboxButton = XboxButton()
+            self.DPad = DPad()
+
             # Configure thread
             self._monitor_thread = threading.Thread(target=self._XBOX_ControllerMonitor, args=())
             self._monitor_thread.daemon = True
@@ -55,6 +88,16 @@ class Controller():
 
         # Playstation 3 Controller
         elif self.gamepad_type == 'PS3':
+
+            # Define Controller Classes
+            self.JoyLeft = Joystick(self.PS3_CONST)
+            self.JoyRight = Joystick(self.PS3_CONST)
+            self.TrigLeft = Trigger(self.PS3_CONST)
+            self.TrigRight = Trigger(self.PS3_CONST)
+            self.PSButton = PSButton()
+            self.DPad = DPad()
+            
+
             # Configure thread
             self._monitor_thread = threading.Thread(target=self._PS3_ControllerMonitor, args=())
             self._monitor_thread.daemon = True
@@ -71,33 +114,10 @@ class Controller():
     # ------------------------------
     def read(self):
 
-        # buttonA = self.Button.DPad_Left
-        # buttonB = self.Button.DPad_Right
-        # buttonX = self.Button.DPad_Down
-        # buttonY = self.Button.DPad_Up
+        self.JoyLeft.getAxis_X()
 
-        # joyLeft = ControllerToolbox._Joystick(self.Axis.JoystickLeft_X, self.Axis.JoystickLeft_Y)
-        # joyRight = ControllerToolbox._Joystick(self.Axis.JoystickRight_X, self.Axis.JoystickRight_Y)
-
-        # trigger = ControllerToolbox._Trigger(self.Axis.TriggerLeft, self.Axis.TriggerRight)
-
-        # return [self.Axis.JoystickLeft_X, joyLeft.X, self.Axis.JoystickLeft_Y, joyLeft.Y, trigger.L, trigger.R]
-
-        joyLeftX_DB = ControllerToolbox.calcMinMaxScaling_DB(self.Axis.JoyL_X,
-                                                          -32768,
-                                                          32767,
-                                                          5000,
-                                                          -100.0,
-                                                          100.0)
-
-        joyLeftX = ControllerToolbox.calcMinMaxScaling(self.Axis.JoyL_X,
-                                                          -32768,
-                                                          32767,
-                                                          -100.0,
-                                                          100.0)
-
-        return[self.Axis.JoyL_X, joyLeftX_DB, joyLeftX]
-
+        # print(self.JoyLeft.getAxis_X())
+        return 0
     # XBOX Controller Monitor
     # ------------------------------    
     def _XBOX_ControllerMonitor(self):
@@ -113,11 +133,25 @@ class Controller():
                 
                 # Axis Event
                 # Get incomming Axis-Input from Controller (integer values)
-                ControllerToolbox.XBOX_AxisEvent(event, ControllerToolbox._CONST_XBOXONE, self.Axis)
+                ControllerToolbox.XBOX_AxisEvent(event,
+                                                self.XBOX_CONST,
+                                                self.JoyLeft.joystickData,
+                                                self.JoyRight.joystickData,
+                                                self.TrigLeft.triggerData,
+                                                self.TrigRight.triggerData,
+                                                self.GenericAxis)
 
                 # Button Event
                 # Get incomming Button-Input from Controller (bool values)
-                ControllerToolbox.XBOX_ButtonEvent(event, ControllerToolbox._CONST_XBOXONE, self.Button)
+                ControllerToolbox.XBOX_ButtonEvent(event,
+                                                self.XBOX_CONST,
+                                                self.JoyLeft.joystickData,
+                                                self.JoyRight.joystickData,
+                                                self.TrigLeft.triggerData,
+                                                self.TrigRight.triggerData,
+                                                self.DPad.dPadData,
+                                                self.XboxButton.xboxButtonData,
+                                                self.GenericAxis)
 
     # Playstation 3 Controller Monitor
     # ------------------------------    
@@ -134,11 +168,25 @@ class Controller():
 
                 # Axis Event
                 # Get incomming Axis-Input from Controller (integer values)
-                ControllerToolbox.PS3_AxisEvent(event, ControllerToolbox._CONST_PS3, self.Axis)
+                ControllerToolbox.PS3_AxisEvent(event,
+                                                self.PS3_CONST,
+                                                self.JoyLeft.joystickData,
+                                                self.JoyRight.joystickData,
+                                                self.TrigLeft.triggerData,
+                                                self.TrigRight.triggerData,
+                                                self.GenericAxis)
 
                 # Button Event
                 # Get incomming Button-Input from Controller (bool values)
-                ControllerToolbox.PS3_ButtonEvent(event, ControllerToolbox._CONST_PS3, self.Button)
+                ControllerToolbox.PS3_ButtonEvent(event,
+                                                self.PS3_CONST,
+                                                self.JoyLeft.joystickData,
+                                                self.JoyRight.joystickData,
+                                                self.TrigLeft.triggerData,
+                                                self.TrigRight.triggerData,
+                                                self.DPad.dPadData,
+                                                self.PSButton.psButtonData,
+                                                self.GenericAxis)
 
 # Main Function
 # ------------------------------   
@@ -147,5 +195,7 @@ if __name__ == '__main__':
     xbox_controller = Controller()
 
     while True:
+        # print(xbox_controller.JoyLeft.getAxis_X())
+        # xbox_controller.read()
         print(xbox_controller.read())
         

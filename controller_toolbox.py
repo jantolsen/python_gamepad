@@ -16,13 +16,12 @@
 from dataclasses import dataclass, field
 from inputs import devices
 from logging import NullHandler
-import controller_toolbox as ControllerToolbox
 
 # Dataclass - Axis 
 # ------------------------------
 # Member related to Controller Axis
 @dataclass
-class _AxisData:
+class GenericAxisData:
     
     # Declare Axis members
     JoyL_X : float = 0.0    # Joystick Left - Axis X
@@ -36,7 +35,7 @@ class _AxisData:
 # ------------------------------
 # Members related to Controller Buttons
 @dataclass
-class _ButtonData:
+class GenericButtonData:
     
     # Declare Button members
     S : bool = 0        # Button - South
@@ -64,7 +63,7 @@ class _ButtonData:
 # ------------------------------
 # Member to hold Controller Input
 @dataclass
-class _JoyData:
+class JoystickData:
     # Define Joystick Data members
     X   : int = 0   # Joystick - X-Axis
     Y   : int = 0   # Joystick - Y-Axis
@@ -74,7 +73,7 @@ class _JoyData:
 # ------------------------------
 # Member to hold Controller Input
 @dataclass
-class _DPadData:
+class DPadData:
     # Define Joystick Data members
     L  : bool = 0   # D-Pad - Left
     R  : bool = 0   # D-Pad - Right
@@ -85,7 +84,7 @@ class _DPadData:
 # ------------------------------
 # Member to hold Controller Input
 @dataclass
-class _TrigData:
+class TriggerData:
     # Define Trigger Data members
     VAL : int = 0   # Trigger - Value
     B1  : bool = 0  # Back Bumper No. 1
@@ -95,7 +94,7 @@ class _TrigData:
 # ------------------------------
 # Member to hold Controller Input
 @dataclass
-class _XBOX_ButtonData:
+class XBOX_ButtonData:
     # Define Button Data members
     A : bool = 0        # Button - A
     B : bool = 0        # Button - B
@@ -108,7 +107,7 @@ class _XBOX_ButtonData:
 # ------------------------------
 # Member to hold Controller Input
 @dataclass
-class _PS_ButtonData:
+class PS_ButtonData:
     # Define Button Data members
     Cross       : bool = 0  # Button - Cross
     Circle      : bool = 0  # Button - Circle
@@ -207,7 +206,7 @@ class _GAMEPAD_CONST:
     JOY_SCALING     : _JOY_SCALING = field(init=False, default_factory = _JOY_SCALING)
     TRIG_SCALING    : _TRIG_SCALING = field(init=False, default_factory = _TRIG_SCALING)
 
-    def __post_init__(self) -> None:
+    def __post_init__(self):
         # Initialize
         self._INIT_EVENTKEY()
         self._INIT_JOY_SCALING()
@@ -266,7 +265,7 @@ class XBOXONE_CONST(_GAMEPAD_CONST):
     and overwrites certain constant values to match the related specific controller type
     """
 
-    def __post_init__(self) -> None:
+    def __post_init__(self):
         # Initialize
         self._INIT_EVENTKEY()
         self._INIT_JOY_SCALING()
@@ -332,7 +331,7 @@ class PS3_CONST(_GAMEPAD_CONST):
     and overwrites certain constant values to match the related specific controller type
     """
 
-    def __post_init__(self) -> None:
+    def __post_init__(self):
         # Initialize
         self._INIT_EVENTKEY()
         self._INIT_JOY_SCALING()
@@ -431,11 +430,11 @@ def getControllerType():
 # ------------------------------
 def XBOX_AxisEvent(event : any, 
                    XBOXONE_CONST : XBOXONE_CONST, 
-                   JoyL : _JoyData,
-                   JoyR : _JoyData,
-                   TrigL : _TrigData,
-                   TrigR : _TrigData,
-                   AxisData : _AxisData):
+                   JoyL : JoystickData,
+                   JoyR : JoystickData,
+                   TrigL : TriggerData,
+                   TrigR : TriggerData,
+                   AxisData : GenericAxisData):
     """
     XBOX Controller
     Get incomming Axis-Events from Controller-Input (integer values)
@@ -478,20 +477,20 @@ def XBOX_AxisEvent(event : any,
 
         # Trigger Right - Axis
         elif event.code == XBOXONE_CONST.EVENTKEY.TRIG_R:
-            TrigL.VAL = event.state
+            TrigR.VAL = event.state
             AxisData.Trig_R = event.state
 
 # XBOX Controller - Button Event
 # ------------------------------
 def XBOX_ButtonEvent(event : any, 
                     XBOXONE_CONST : XBOXONE_CONST, 
-                    JoyL : _JoyData,
-                    JoyR : _JoyData,
-                    TrigL : _TrigData,
-                    TrigR : _TrigData,
-                    DPad : _DPadData,
-                    Button : _XBOX_ButtonData,
-                    ButtonData : _ButtonData):
+                    JoyL : JoystickData,
+                    JoyR : JoystickData,
+                    TrigL : TriggerData,
+                    TrigR : TriggerData,
+                    DPad : DPadData,
+                    Button : XBOX_ButtonData,
+                    ButtonData : GenericButtonData):
     """
     XBOX Controller
     Get incomming Button-Events from Controller-Input (bool values)
@@ -626,11 +625,11 @@ def XBOX_ButtonEvent(event : any,
 # ------------------------------
 def PS3_AxisEvent(event : any, 
                    PS3_CONST : PS3_CONST, 
-                   JoyL : _JoyData,
-                   JoyR : _JoyData,
-                   TrigL : _TrigData,
-                   TrigR : _TrigData,
-                   AxisData : _AxisData):
+                   JoyL : JoystickData,
+                   JoyR : JoystickData,
+                   TrigL : TriggerData,
+                   TrigR : TriggerData,
+                   AxisData : GenericAxisData):
     """
     PS3 Controller
     Get incomming Axis-Events from Controller-Input (integer values)
@@ -680,13 +679,13 @@ def PS3_AxisEvent(event : any,
 # ------------------------------
 def PS3_ButtonEvent(event : any, 
                     PS3_CONST : PS3_CONST, 
-                    JoyL : _JoyData,
-                    JoyR : _JoyData,
-                    TrigL : _TrigData,
-                    TrigR : _TrigData,
-                    DPad : _DPadData,
-                    Button : _PS_ButtonData,
-                    ButtonData : _ButtonData):
+                    JoyL : JoystickData,
+                    JoyR : JoystickData,
+                    TrigL : TriggerData,
+                    TrigR : TriggerData,
+                    DPad : DPadData,
+                    Button : PS_ButtonData,
+                    ButtonData : GenericButtonData):
     """
     PS3 Controller
     Get incomming Button-Events from Controller-Input (bool values)
@@ -896,116 +895,3 @@ def scaleTriggerInput(raw_value : int,
                                         TRIG_SCALE.TRIG_MAX)
     
     return trigger_value
-
-# Joystick Class
-# -----------------------------
-# Based on Joystick-Data, assign values to members of Joystick Class
-# with correct scaling obtained from Gamepad-Constant
-class Joystick():
-    """
-    Jostick Class:
-    Assign values to Joystick members based on incomming Joystick-Data
-    Joystick values are calculated with correct scaling with data from Gamepad-Constants
-    :param GAMEPAD_CONST: Controller Constants (_GAMEPAD_CONST)
-    :param JoyData: Joystick Data (_Joy_Data)
-    """
-    # Class Constructor
-    def __init__(self, GAMEPAD_CONST : _GAMEPAD_CONST, JoyData : _JoyData):
-
-        # Class Input(s):
-        self.X_raw = JoyData.X
-        self.Y_raw = JoyData.Y
-        self.PB = JoyData.PB
-        self.JOY_SCALING = GAMEPAD_CONST.JOY_SCALING
-
-        # Class Variables
-        self.X = 0.0
-        self.Y = 0.0
-        self.PB = 0
-
-        # Update Joystick Values
-        self.updateValues(JoyData)
-
-    # Update Joystick Values based on new Input data
-    def updateValues(self, JoyData : _JoyData):
-        # Update Class Inputs
-        self.X_raw = JoyData.X
-        self.Y_raw = JoyData.Y
-        self.PB = JoyData.PB
-
-        # Get Joystick Values
-        self.getPushbuttonValue()
-        self.getAxisValues()
-
-    # Get Joystick Pushbutton Value
-    def getPushbuttonValue(self):
-        
-        # Function Return
-        return self.PB
-
-    # Get Joystick Axis-X Value
-    def getAxisXValue(self):
-        # Scale Axis Value
-        self.X = scaleJoystickInput(self.X_raw, self.JOY_SCALING)
-
-        # Function Return
-        return self.X    
-
-    # Get Joystick Axis-Y Value
-    def getAxisYValue(self):
-        # Scale Axis Value
-        self.Y = scaleJoystickInput(self.Y_raw, self.JOY_SCALING)
-
-        # Function Return
-        return self.Y   
-    
-    # Get Joystick Axis Values
-    def getAxisValues(self):
-        # Call internal get axis value
-        self.X = self.getAxisXValue()
-        self.Y = self.getAxisYValue()
-
-        # Function Return
-        return [self.X, self.Y]
-
-# Main Function
-# ------------------------------   
-if __name__ == '__main__':
-    # xbox_constants = _XBOXONE_CONST(_EVENTKEY, _JOYSCALE, _TRIG_SCALING)
-    # xbox_constants = _XBOXONE_CONST()
-    
-    # xbox_constants.JOYSCALE.JOY_RAW_DB = 3000
-    # # print(xboxOneConstants)
-    # print(xbox_constants)
-    # print(xbox_constants.JOYSCALE.JOY_RAW_MAX)
-    # print(xbox_constants.JOYSCALE.JOY_RAW_DB)
-    # print('\n')
-
-    xboxConst = XBOXONE_CONST()
-    joyL_data = _JoyData()
-
-
-
-    print(xboxConst)
-    print(xboxConst.JOY_SCALING.JOY_RAW_DB)
-    print('\n')
-
-    xboxConst.JOY_SCALING.JOY_RAW_DB = 5000
-    joyL_data.X = 23185
-
-    JoyL = Joystick(xboxConst, joyL_data)
-    # JoyL.updateValues(joyL_data)
-
-    print('Joystick:')
-    print(JoyL)
-    print("X-Axis: ", JoyL.X, " Raw Value: ", JoyL.X_raw)
-    print("Y-Axis: ", JoyL.Y, " Raw Value: ", JoyL.Y_raw)
-    print('\n')
-
-    joyL_data.X = -23185
-    JoyL.updateValues(joyL_data)
-
-    print("X-Axis: ", JoyL.X, " Raw Value: ", JoyL.X_raw)
-    print("Y-Axis: ", JoyL.Y, " Raw Value: ", JoyL.Y_raw)
-    print('\n')
-
