@@ -10,7 +10,7 @@
 #           [25.06.2022] - Jan T. Olsen
 
 # Import packages
-import controller_toolbox as ControllerToolbox
+import toolbox as Toolbox
 
 # Joystick Class
 # -----------------------------
@@ -20,13 +20,13 @@ class DPad():
     """
     Directional-Pad Class:
     Assign values to Directional-Pad members based on incomming Directional-Pad-Data
-    :param DPadData: D-Pad Data (ControllerToolbox.DPadData)
+    :param DPadData: D-Pad Data (Toolbox.DPadData)
     """
     # Class Constructor
     def __init__(self) -> None:
 
         # D-Pad Data
-        self.dPadData = ControllerToolbox.DPadData
+        self.dPadData = Toolbox.DPadData
 
         # Class Variables
         self.name = 'DPad_'

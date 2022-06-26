@@ -10,7 +10,7 @@
 #           [25.06.2022] - Jan T. Olsen
 
 # Import packages
-import controller_toolbox as ControllerToolbox
+import toolbox as Toolbox
 
 # Trigger Class
 # -----------------------------
@@ -21,16 +21,16 @@ class Trigger():
     Trigger Class:
     Assign values to Trigger members based on incomming Trigger-Data
     Trigger values are calculated with correct scaling with data from Gamepad-Constants
-    :param GAMEPAD_CONST: Controller Constants (ControllerToolbox._GAMEPAD_CONST)
-    :param TriggerData: Trigger Data (ControllerToolbox.JoystickData)
+    :param GAMEPAD_CONST: Controller Constants (Toolbox._GAMEPAD_CONST)
+    :param TriggerData: Trigger Data (Toolbox.JoystickData)
     """
     # Class Constructor
     def __init__(self,
                 name : str, 
-                GAMEPAD_CONST : ControllerToolbox._GAMEPAD_CONST) -> None:
+                GAMEPAD_CONST : Toolbox._GAMEPAD_CONST) -> None:
 
         # Trigger Data
-        self.triggerData = ControllerToolbox.TriggerData
+        self.triggerData = Toolbox.TriggerData
 
         # Class Variables
         self.name = name
@@ -74,7 +74,7 @@ class Trigger():
     # Get Trigger Axis Value
     def getAxis(self) -> float:
         # Scale Axis Value
-        self.Val = ControllerToolbox.scaleTriggerInput(self.triggerData.VAL, self.ScalingDataConstants)
+        self.Val = Toolbox.scaleTriggerInput(self.triggerData.VAL, self.ScalingDataConstants)
 
         # Function Return
         return self.Val    

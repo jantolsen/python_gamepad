@@ -10,7 +10,7 @@
 #           [25.06.2022] - Jan T. Olsen
 
 # Import packages
-import controller_toolbox as ControllerToolbox
+import toolbox as Toolbox
 
 # Joystick Class
 # -----------------------------
@@ -21,16 +21,16 @@ class Joystick():
     Jostick Class:
     Assign values to Joystick members based on incomming Joystick-Data
     Joystick values are calculated with correct scaling with data from Gamepad-Constants
-    :param GAMEPAD_CONST: Controller Constants (ControllerToolbox._GAMEPAD_CONST)
-    :param JoystickData: Joystick Data (ControllerToolbox.JoystickData)
+    :param GAMEPAD_CONST: Controller Constants (Toolbox._GAMEPAD_CONST)
+    :param JoystickData: Joystick Data (Toolbox.JoystickData)
     """
     # Class Constructor
     def __init__(self, 
                 name : str, 
-                GAMEPAD_CONST : ControllerToolbox._GAMEPAD_CONST):
+                GAMEPAD_CONST : Toolbox._GAMEPAD_CONST):
 
         # Joystick Data
-        self.joystickData = ControllerToolbox.JoystickData
+        self.joystickData = Toolbox.JoystickData
 
         # Class Variables
         self.name = name
@@ -65,7 +65,7 @@ class Joystick():
     # Get Joystick Axis-X Value
     def getAxis_X(self) -> float:
         # Get and Scale Axis Value
-        self.X = ControllerToolbox.scaleJoystickInput(self.joystickData.X, self.ScalingData)
+        self.X = Toolbox.scaleJoystickInput(self.joystickData.X, self.ScalingData)
 
         # Function Return
         return self.X    
@@ -73,7 +73,7 @@ class Joystick():
     # Get Joystick Axis-Y Value
     def getAxis_Y(self) -> float:
         # Get and Scale Axis Value
-        self.Y = ControllerToolbox.scaleJoystickInput(self.joystickData.Y, self.ScalingData)
+        self.Y = Toolbox.scaleJoystickInput(self.joystickData.Y, self.ScalingData)
 
         # Function Return
         return self.Y   

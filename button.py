@@ -10,7 +10,7 @@
 #           [25.06.2022] - Jan T. Olsen
 
 # Import packages
-import controller_toolbox as ControllerToolbox
+import toolbox as Toolbox
 
 # XBOX - Button Class
 # -----------------------------
@@ -20,13 +20,13 @@ class XboxButton():
     """
     Xbox Button Class:
     Assign values to Button members based on incomming Button-Data
-    :param XBOX_ButtonData: Xbox Button Data (ControllerToolbox.XBOX_ButtonData)
+    :param XBOX_ButtonData: Xbox Button Data (Toolbox.XBOX_ButtonData)
     """
     # Class Constructor
     def __init__(self):
 
         # D-Pad Data
-        self.xboxButtonData = ControllerToolbox.XBOX_ButtonData
+        self.xboxButtonData = Toolbox.XBOX_ButtonData
 
         # Class Variables
         self.name = 'Btn_'
@@ -127,13 +127,13 @@ class PSButton():
     """
     PlayStation Button Class:
     Assign values to Button members based on incomming Button-Data
-    :param PS_ButtonData: Xbox Button Data (ControllerToolbox.PS3_ButtonData)
+    :param PS_ButtonData: Xbox Button Data (Toolbox.PS3_ButtonData)
     """
     # Class Constructor
     def __init__(self, name : str) -> None:
 
         # D-Pad Data
-        self.psButtonData = ControllerToolbox.PS_ButtonData
+        self.psButtonData = Toolbox.PS_ButtonData
 
         # Class Variables
         self.name = 'Btn_'

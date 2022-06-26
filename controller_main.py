@@ -17,14 +17,14 @@ import threading
 import time
 
 # Import Class-Files and Toolbox
-import controller_toolbox as ControllerToolbox
+import toolbox as Toolbox
 
 # Import Class Files
-from controller_joystick import Joystick as Joystick
-from controller_trigger import Trigger as Trigger
-from controller_dpad import DPad as DPad
-from controller_button import XboxButton as XboxButton
-from controller_button import PSButton as PSButton
+from joystick import Joystick as Joystick
+from trigger import Trigger as Trigger
+from dpad import DPad as DPad
+from button import XboxButton as XboxButton
+from button import PSButton as PSButton
 
 # Controller Class
 # ------------------------------
@@ -36,24 +36,24 @@ class Controller():
 
         # Define Controller Members
         # (based on Dataclasses from Controller-Toolbox)
-        self.GenericAxis = ControllerToolbox.GenericAxisData()
-        self.GenericButton = ControllerToolbox.GenericButtonData()
+        self.GenericAxis = Toolbox.GenericAxisData()
+        self.GenericButton = Toolbox.GenericButtonData()
 
         # Constants
-        self.XBOX_CONST = ControllerToolbox.XBOXONE_CONST()
-        self.PS3_CONST = ControllerToolbox.PS3_CONST()
+        self.XBOX_CONST = Toolbox.XBOXONE_CONST()
+        self.PS3_CONST = Toolbox.PS3_CONST()
         
         # Search for connected controller
-        # (using ControllerToolbox function)
-        self.gamepad = ControllerToolbox.getController()
-
+        # (using Toolbox function)
+        self.gamepad = Toolbox.getController()
+        
         # Determine the type of Controller
-        # (using ControllerToolbox function)
-        self.gamepad_type = ControllerToolbox.getControllerType()
-
+        # (using Toolbox function)
+        self.gamepad_type = Toolbox.getControllerType()
         print(self.gamepad_type) 
         
-        self.initialized = False
+        # Controller Initialized
+        self.init = False
 
         # Initialize Controller Monitor on a designated thread
         # ------------------------------
@@ -77,8 +77,8 @@ class Controller():
             # Start XBOX-Controller-Monitor
             self._monitor_thread.start()
 
-            # Initialization done
-            self.initialized = True
+            # Controller Initialization done
+            self.init = True
 
         # Playstation 3 Controller
         elif self.gamepad_type == 'PS3':
@@ -98,16 +98,16 @@ class Controller():
             # Start PS3-Controller-Monitor
             self._monitor_thread.start()
 
-            # Initialization done
-            self.initialized = True
+            # Controller Initialization done
+            self.init = True
 
         # Unknown Controller
         else:
+            # Report to terminal
             print('Unknown Controller')
             
-            # Initialization done
-            self.initialized = False
-
+            # Controller Initialization done
+            self.init = False
             pass
 
     # Update Controller values
@@ -141,7 +141,7 @@ class Controller():
                 
                 # Axis Event
                 # Get incomming Axis-Input from Controller (integer values)
-                ControllerToolbox.XBOX_AxisEvent(event,
+                Toolbox.XBOX_AxisEvent(event,
                                                 self.XBOX_CONST,
                                                 self.JoyLeft.joystickData,
                                                 self.JoyRight.joystickData,
@@ -151,7 +151,7 @@ class Controller():
 
                 # Button Event
                 # Get incomming Button-Input from Controller (bool values)
-                ControllerToolbox.XBOX_ButtonEvent(event,
+                Toolbox.XBOX_ButtonEvent(event,
                                                 self.XBOX_CONST,
                                                 self.JoyLeft.joystickData,
                                                 self.JoyRight.joystickData,
@@ -176,7 +176,7 @@ class Controller():
 
                 # Axis Event
                 # Get incomming Axis-Input from Controller (integer values)
-                ControllerToolbox.PS3_AxisEvent(event,
+                Toolbox.PS3_AxisEvent(event,
                                                 self.PS3_CONST,
                                                 self.JoyLeft.joystickData,
                                                 self.JoyRight.joystickData,
@@ -186,7 +186,7 @@ class Controller():
 
                 # Button Event
                 # Get incomming Button-Input from Controller (bool values)
-                ControllerToolbox.PS3_ButtonEvent(event,
+                Toolbox.PS3_ButtonEvent(event,
                                                 self.PS3_CONST,
                                                 self.JoyLeft.joystickData,
                                                 self.JoyRight.joystickData,
@@ -200,11 +200,11 @@ class Controller():
 # ------------------------------   
 if __name__ == '__main__':
 
-    xbox_controller = Controller()
+    xboxController = Controller()
 
-    while xbox_controller.initialized:
+    while xboxController.init:
         
-        xbox_controller.update()
+        xboxController.update()
 
         print('Xbox Controller:')
         # print(xbox_controller.JoyLeft.getJoystick())
@@ -213,8 +213,8 @@ if __name__ == '__main__':
         # print(xbox_controller.TrigLeft.getTrigger())
         # print(xbox_controller.TrigRight.getTrigger())
         
-        print(xbox_controller.DPad.getDPad())
-        print(xbox_controller.Button.getButtons())
+        print(xboxController.DPad.getDPad())
+        print(xboxController.Button.getButtons())
         print('\n')
 
         time.sleep(0.100)
