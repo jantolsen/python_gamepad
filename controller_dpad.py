@@ -23,30 +23,36 @@ class DPad():
     :param DPadData: D-Pad Data (ControllerToolbox.DPadData)
     """
     # Class Constructor
-    def __init__(self):
+    def __init__(self) -> None:
 
         # D-Pad Data
         self.dPadData = ControllerToolbox.DPadData
 
         # Class Variables
+        self.name = 'DPad_'
+        self.dPad = dict()
         self.L = 0
         self.R = 0
         self.U = 0
         self.D = 0
 
-    #     # Update D-Pad Button Values
-    #     self.updateValues(dPadData)
+        # Call Update at Class construction
+        self.update()
+    
+    # Update Joystick Value(s)
+    def update(self) -> None:
 
-    # # Update D-Pad Values based on new Input data
-    # def updateValues(self, dPadData : ControllerToolbox.DPadData):
-    #     # Update Class Inputs
-    #     self.L = dPadData.L
-    #     self.R = dPadData.R
-    #     self.U = dPadData.U
-    #     self.D = dPadData.D
+        # Call internal get-function
+        self.getDPad()
+        
+        # Class dictionary
+        self.dPad = {self.name + 'L' : self.L,
+                    self.name + 'R' : self.R,
+                    self.name + 'U' : self.U,
+                    self.name + 'D' : self.D}
 
     # Get D-Pad Left-Button Value
-    def getButtonLeft(self):
+    def getButtonLeft(self) -> bool:
         # Get Button Data
         self.L = self.dPadData.L
 
@@ -54,7 +60,7 @@ class DPad():
         return self.L
 
     # Get D-Pad Right-Button Value
-    def getButtonRight(self):
+    def getButtonRight(self) -> bool:
         # Get Button Data
         self.R = self.dPadData.R
 
@@ -62,7 +68,7 @@ class DPad():
         return self.R
 
     # Get D-Pad Up-Button Value
-    def getButtonUp(self):
+    def getButtonUp(self) -> bool:
         # Get Button Data
         self.U = self.dPadData.U
 
@@ -78,7 +84,7 @@ class DPad():
         return self.D
 
     # Get D-Pad Button Values
-    def getDPad(self):
+    def getDPad(self) -> dict:
         # Call internal functions
         self.getButtonLeft()
         self.getButtonRight()
@@ -86,4 +92,5 @@ class DPad():
         self.getButtonDown()
 
         # Function Return
-        return [self.L, self.R, self.U, self.D]
+        # return [self.L, self.R, self.U, self.D]
+        return self.dPad

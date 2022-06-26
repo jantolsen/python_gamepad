@@ -11,7 +11,6 @@
 
 # Import packages
 from logging import NullHandler
-from turtle import left
 from inputs import get_gamepad
 from inputs import devices
 import threading
@@ -43,17 +42,6 @@ class Controller():
         self.XBOX_CONST = ControllerToolbox.XBOXONE_CONST()
         self.PS3_CONST = ControllerToolbox.PS3_CONST()
         
-        # Define Empty Classes
-        # self.JoyLeft = object()
-        # self.JoyRight = object()
-        # self.JoyLeft = object()
-        # self.JoyRight = object()
-        # self.TrigLeft = object()
-        # self.TrigRight = object()
-        # self.DPad = object()
-        # self.XboxButton = object()
-        # self.PSButton = object()
-        
         # Search for connected controller
         # (using ControllerToolbox function)
         self.gamepad = ControllerToolbox.getController()
@@ -72,11 +60,11 @@ class Controller():
         if self.gamepad_type == 'XBOX':
             
             # Define Controller Classes
-            self.JoyLeft = Joystick(self.XBOX_CONST)
-            self.JoyRight = Joystick(self.XBOX_CONST)
-            self.TrigLeft = Trigger(self.XBOX_CONST)
-            self.TrigRight = Trigger(self.XBOX_CONST)
-            self.XboxButton = XboxButton()
+            self.JoyLeft = Joystick('JOY_L', self.XBOX_CONST)
+            self.JoyRight = Joystick('JOY_R', self.XBOX_CONST)
+            self.TrigLeft = Trigger('L' ,self.XBOX_CONST)
+            self.TrigRight = Trigger('R' ,self.XBOX_CONST)
+            self.Button = XboxButton()
             self.DPad = DPad()
 
             # Configure thread
@@ -90,13 +78,12 @@ class Controller():
         elif self.gamepad_type == 'PS3':
 
             # Define Controller Classes
-            self.JoyLeft = Joystick(self.PS3_CONST)
-            self.JoyRight = Joystick(self.PS3_CONST)
+            self.JoyLeft = Joystick('JOY_L', self.PS3_CONST)
+            self.JoyRight = Joystick('JOY_R', self.PS3_CONST)
             self.TrigLeft = Trigger(self.PS3_CONST)
             self.TrigRight = Trigger(self.PS3_CONST)
-            self.PSButton = PSButton()
+            self.Button = PSButton()
             self.DPad = DPad()
-            
 
             # Configure thread
             self._monitor_thread = threading.Thread(target=self._PS3_ControllerMonitor, args=())
@@ -110,14 +97,22 @@ class Controller():
             print('Unknown Controller')
             pass
 
-    # Read Controller values
+    # Update Controller values
     # ------------------------------
-    def read(self):
+    def update(self):
 
-        self.JoyLeft.getAxis_X()
+        # Joystick Update
+        self.JoyLeft.update()
+        self.JoyRight.update()
 
-        # print(self.JoyLeft.getAxis_X())
-        return 0
+        # Trigger Update
+        self.TrigLeft.update()
+        self.TrigRight.update()
+
+        # Button update
+        self.DPad.update()
+        self.Button.update()
+        
     # XBOX Controller Monitor
     # ------------------------------    
     def _XBOX_ControllerMonitor(self):
@@ -150,7 +145,7 @@ class Controller():
                                                 self.TrigLeft.triggerData,
                                                 self.TrigRight.triggerData,
                                                 self.DPad.dPadData,
-                                                self.XboxButton.xboxButtonData,
+                                                self.Button.xboxButtonData,
                                                 self.GenericAxis)
 
     # Playstation 3 Controller Monitor
@@ -185,7 +180,7 @@ class Controller():
                                                 self.TrigLeft.triggerData,
                                                 self.TrigRight.triggerData,
                                                 self.DPad.dPadData,
-                                                self.PSButton.psButtonData,
+                                                self.Button.psButtonData,
                                                 self.GenericAxis)
 
 # Main Function
@@ -195,7 +190,11 @@ if __name__ == '__main__':
     xbox_controller = Controller()
 
     while True:
-        # print(xbox_controller.JoyLeft.getAxis_X())
-        # xbox_controller.read()
-        print(xbox_controller.read())
+        xbox_controller.update()
+        
+
+        # print(xbox_controller.DPad.getDPad())
+        # print(xbox_controller.Button.getButtons())
+        print(xbox_controller.DPad.getDPad())
+
         

@@ -25,47 +25,38 @@ class Trigger():
     :param TriggerData: Trigger Data (ControllerToolbox.JoystickData)
     """
     # Class Constructor
-    def __init__(self, 
-                GAMEPAD_CONST : ControllerToolbox._GAMEPAD_CONST):
+    def __init__(self,
+                name : str, 
+                GAMEPAD_CONST : ControllerToolbox._GAMEPAD_CONST) -> None:
 
         # Trigger Data
         self.triggerData = ControllerToolbox.TriggerData
 
         # Class Variables
-        self.TrigVal = 0
+        self.name = name
+        self.trigger = dict()
+        self.Val = 0
         self.B1 = 0
         self.B2 = 0
-
         self.ScalingDataConstants = GAMEPAD_CONST.TRIG_SCALING
-        # self.Value_raw = self.triggerData.VAL
 
-    #     # Update Joystick Values
-    #     self.updateValues(self.joystickData)
+        # Call Update at Class construction
+        self.update()
+    
+    # Update Joystick Value(s)
+    def update(self) -> None:
 
-    #     # Class Input(s):
-    #     self.Value_raw = triggerData.VAL
-    #     self.ScalingDataConstants = GAMEPAD_CONST.TRIG_SCALING
+        # Call internal get-function
+        self.getTrigger()
 
-    #     # Class Variables
-    #     self.TrigVal = 0
-    #     self.B1 = 0
-    #     self.B2 = 0
+        # Class dictionary
+        self.trigger = {self.name + 'T'  : float("{:.2f}".format(self.Val)),
+                        self.name + 'B1' : self.B1,
+                        self.name + 'B2' : self.B2}
 
-    #     # Update Joystick Values
-    #     self.updateValues(triggerData)
-
-    # # Update Trigger Values based on new Input data
-    # def updateValues(self, triggerData : ControllerToolbox.TriggerData):
-    #     # Update Class Inputs
-    #     self.Value_raw = triggerData.VAL
-    #     self.B1 = triggerData.B1
-    #     self.B2 = triggerData.B2
-
-    #     # Get Trigger Values
-    #     self.getTrigger()
 
     # Get Trigger Back-Bumper No. 1 Value
-    def getButton_B1(self):
+    def getButton_B1(self) -> bool:
         # Get Button Value
         self.B1 = self.triggerData.B1
 
@@ -73,7 +64,7 @@ class Trigger():
         return self.B1
 
     # Get Trigger Back-Bumper No. 2 Value
-    def getButton_B2(self):
+    def getButton_B2(self) -> bool:
         # Get Button Value
         self.B2 = self.triggerData.B2
 
@@ -81,19 +72,20 @@ class Trigger():
         return self.B2
 
     # Get Trigger Axis Value
-    def getAxis(self):
+    def getAxis(self) -> float:
         # Scale Axis Value
-        self.TriggerVal = ControllerToolbox.scaleTriggerInput(self.triggerData.VAL, self.ScalingDataConstants)
+        self.Val = ControllerToolbox.scaleTriggerInput(self.triggerData.VAL, self.ScalingDataConstants)
 
         # Function Return
-        return self.TrigVal    
+        return self.Val    
 
     # Get Joystick Values
-    def getTrigger(self):
+    def getTrigger(self) -> dict:
         # Call internal functions
         self.getAxis()
         self.getButton_B1()
         self.getButton_B2()
 
         # Function Return
-        return [self.TrigVal, self.B1, self.B2]
+        # return [self.Val, self.B1, self.B2]
+        return self.trigger

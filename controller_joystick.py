@@ -10,6 +10,7 @@
 #           [25.06.2022] - Jan T. Olsen
 
 # Import packages
+from xmlrpc.client import Boolean
 import controller_toolbox as ControllerToolbox
 
 # Joystick Class
@@ -25,35 +26,37 @@ class Joystick():
     :param JoystickData: Joystick Data (ControllerToolbox.JoystickData)
     """
     # Class Constructor
-    def __init__(self, GAMEPAD_CONST : ControllerToolbox._GAMEPAD_CONST):
+    def __init__(self, 
+                name : str, 
+                GAMEPAD_CONST : ControllerToolbox._GAMEPAD_CONST):
 
         # Joystick Data
         self.joystickData = ControllerToolbox.JoystickData
 
         # Class Variables
-        self.X = 0.0
+        self.name = name
+        self.joy = dict()
+        self.X = float("{:.3f}".format(0.0))
         self.Y = 0.0
         self.PB = 0
+        self.ScalingData = GAMEPAD_CONST.JOY_SCALING
 
-        self.ScalingDataConstants = GAMEPAD_CONST.JOY_SCALING
-        # self.X_raw = self.joystickData.X
-        # self.Y_raw = self.joystickData.Y
+        # Call Update at Class construction
+        self.update()
+    
+    # Update Joystick Value(s)
+    def update(self) -> None:
+        
+        # Call internal get-function
+        self.getJoystick()
 
-    #     # Update Joystick Values
-    #     self.updateValues(self.joystickData)
-
-    # # Update Joystick Values based on new Input data
-    # def updateValues(self, JoystickData : ControllerToolbox.JoystickData):
-    #     # Update Class Inputs
-    #     self.X_raw = JoystickData.X
-    #     self.Y_raw = JoystickData.Y
-    #     self.PB = JoystickData.PB
-
-    #     # Get Joystick Values
-    #     self.getJoystick()
+        # Class dictionary
+        self.joy = {self.name + 'X' : float("{:.2f}".format(self.X)),
+                    self.name + 'Y' : float("{:.2f}".format(self.Y)),
+                    self.name + 'PB' : self.PB}
 
     # Get Joystick Pushbutton Value
-    def getButton_PB(self):
+    def getButton_PB(self) -> bool:
         # Get Button Value
         self.PB = self.joystickData.PB
 
@@ -61,23 +64,23 @@ class Joystick():
         return self.PB
 
     # Get Joystick Axis-X Value
-    def getAxis_X(self):
+    def getAxis_X(self) -> float:
         # Get and Scale Axis Value
-        self.X = ControllerToolbox.scaleJoystickInput(self.joystickData.X, self.ScalingDataConstants)
+        self.X = ControllerToolbox.scaleJoystickInput(self.joystickData.X, self.ScalingData)
 
         # Function Return
         return self.X    
 
     # Get Joystick Axis-Y Value
-    def getAxis_Y(self):
+    def getAxis_Y(self) -> float:
         # Get and Scale Axis Value
-        self.Y = ControllerToolbox.scaleJoystickInput(self.joystickData.Y, self.ScalingDataConstants)
+        self.Y = ControllerToolbox.scaleJoystickInput(self.joystickData.Y, self.ScalingData)
 
         # Function Return
         return self.Y   
     
     # Get Joystick Axis Values
-    def getAxes(self):
+    def getAxes(self) -> float:
         # Call internal get axis value
         self.X = self.getAxis_X()
         self.Y = self.getAxis_Y()
@@ -86,10 +89,10 @@ class Joystick():
         return [self.X, self.Y]
 
     # Get Joystick Values
-    def getJoystick(self):
+    def getJoystick(self) -> dict:
         # Call internal functions
         self.getButton_PB()
         self.getAxes()
 
         # Function Return
-        return [self.X, self.Y, self.PB]
+        return self.joy
