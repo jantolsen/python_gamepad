@@ -10,7 +10,6 @@
 #           [25.06.2022] - Jan T. Olsen
 
 # Import packages
-from xmlrpc.client import Boolean
 import controller_toolbox as ControllerToolbox
 
 # Joystick Class

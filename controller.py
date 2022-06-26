@@ -14,6 +14,7 @@ from logging import NullHandler
 from inputs import get_gamepad
 from inputs import devices
 import threading
+import time
 
 # Import Class-Files and Toolbox
 import controller_toolbox as ControllerToolbox
@@ -51,6 +52,8 @@ class Controller():
         self.gamepad_type = ControllerToolbox.getControllerType()
 
         print(self.gamepad_type) 
+        
+        self.initialized = False
 
         # Initialize Controller Monitor on a designated thread
         # ------------------------------
@@ -74,6 +77,9 @@ class Controller():
             # Start XBOX-Controller-Monitor
             self._monitor_thread.start()
 
+            # Initialization done
+            self.initialized = True
+
         # Playstation 3 Controller
         elif self.gamepad_type == 'PS3':
 
@@ -92,9 +98,16 @@ class Controller():
             # Start PS3-Controller-Monitor
             self._monitor_thread.start()
 
+            # Initialization done
+            self.initialized = True
+
         # Unknown Controller
         else:
             print('Unknown Controller')
+            
+            # Initialization done
+            self.initialized = False
+
             pass
 
     # Update Controller values
@@ -189,12 +202,21 @@ if __name__ == '__main__':
 
     xbox_controller = Controller()
 
-    while True:
-        xbox_controller.update()
+    while xbox_controller.initialized:
         
+        xbox_controller.update()
 
-        # print(xbox_controller.DPad.getDPad())
-        # print(xbox_controller.Button.getButtons())
+        print('Xbox Controller:')
+        # print(xbox_controller.JoyLeft.getJoystick())
+        # print(xbox_controller.JoyRight.getJoystick())
+
+        # print(xbox_controller.TrigLeft.getTrigger())
+        # print(xbox_controller.TrigRight.getTrigger())
+        
         print(xbox_controller.DPad.getDPad())
+        print(xbox_controller.Button.getButtons())
+        print('\n')
+
+        time.sleep(0.100)
 
         
