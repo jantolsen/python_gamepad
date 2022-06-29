@@ -10,9 +10,6 @@
 #           [20.06.2022] - Jan T. Olsen
 
 # Import packages
-from logging import NullHandler
-from inputs import get_gamepad
-from inputs import devices
 import threading
 import time
 
@@ -49,9 +46,8 @@ class Controller():
         
         # Determine the type of Controller
         # (using Toolbox function)
-        self.gamepad_type = Toolbox.getControllerType()
-        print(self.gamepad_type) 
-        
+        self.gamepad_type = Toolbox.getControllerType(self.gamepad)
+
         # Controller Initialized
         self.init = False
 
@@ -103,12 +99,11 @@ class Controller():
 
         # Unknown Controller
         else:
-            # Report to terminal
-            print('Unknown Controller')
-            
-            # Controller Initialization done
+            # Controller Initialization failed
             self.init = False
-            pass
+
+            # Raise Error 
+            raise TypeError('Unknown Controller')
 
     # Update Controller values
     # ------------------------------

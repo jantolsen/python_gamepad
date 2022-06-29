@@ -15,12 +15,11 @@
 # Import packages
 from dataclasses import dataclass, field
 from inputs import devices
-from logging import NullHandler
 
 # Dataclass - Axis 
 # ------------------------------
 # Member related to Controller Axis
-@dataclass
+@dataclass(slots=False)
 class GenericAxisData:
     
     # Declare Axis members
@@ -34,7 +33,7 @@ class GenericAxisData:
 # Dataclass - Buttons 
 # ------------------------------
 # Members related to Controller Buttons
-@dataclass
+@dataclass(slots=False)
 class GenericButtonData:
     
     # Declare Button members
@@ -62,7 +61,7 @@ class GenericButtonData:
 # Dataclass - Joystick Data
 # ------------------------------
 # Member to hold Controller Input
-@dataclass
+@dataclass(slots=False)
 class JoystickData:
     # Define Joystick Data members
     X   : int = 0   # Joystick - X-Axis
@@ -72,7 +71,7 @@ class JoystickData:
 # Dataclass - Directional-Pad Data
 # ------------------------------
 # Member to hold Controller Input
-@dataclass
+@dataclass(slots=False)
 class DPadData:
     # Define Joystick Data members
     L  : bool = 0   # D-Pad - Left
@@ -83,7 +82,7 @@ class DPadData:
 # Dataclass - Trigger Data
 # ------------------------------
 # Member to hold Controller Input
-@dataclass
+@dataclass(slots=False)
 class TriggerData:
     # Define Trigger Data members
     VAL : int = 0   # Trigger - Value
@@ -93,7 +92,7 @@ class TriggerData:
 # Dataclass - Button Data (XBOX)
 # ------------------------------
 # Member to hold Controller Input
-@dataclass
+@dataclass(slots=False)
 class XBOX_ButtonData:
     # Define Button Data members
     A : bool = 0        # Button - A
@@ -106,7 +105,7 @@ class XBOX_ButtonData:
 # Dataclass - Button Data (PS)
 # ------------------------------
 # Member to hold Controller Input
-@dataclass
+@dataclass(slots=False)
 class PS_ButtonData:
     # Define Button Data members
     Cross       : bool = 0  # Button - Cross
@@ -118,7 +117,7 @@ class PS_ButtonData:
 
 # Dataclass - Controller Event-Key Constants
 # ------------------------------
-@dataclass
+@dataclass(slots=False)
 class _EVENTKEY:
     """
     Controller Event-Key Constants
@@ -158,8 +157,8 @@ class _EVENTKEY:
 
 # Dataclass - Controller Joystick Scaling Constans
 # ------------------------------
-@dataclass
-class _JOY_SCALING():
+@dataclass(slots=False)
+class _JOY_SCALING:
     """
     Controller Joystick Scaling Constans
     Data constants for scaling Controller Joystick values
@@ -175,8 +174,8 @@ class _JOY_SCALING():
 
 # Dataclass - Controller Trigger Scaling Constans
 # ------------------------------
-@dataclass
-class _TRIG_SCALING():
+@dataclass(slots=False)
+class _TRIG_SCALING:
     """
     Controller Trigger Scaling Constans
     Data constants for scaling Controller Trigger values
@@ -192,7 +191,7 @@ class _TRIG_SCALING():
 
 # Dataclass - Gamepad Controller Constants
 # ------------------------------
-@dataclass
+@dataclass(slots=False)
 class _GAMEPAD_CONST:
     """
     Gamepad Controller Constants:
@@ -257,7 +256,7 @@ class _GAMEPAD_CONST:
 
 # Dataclass - XBOX One Controller Constants
 # ------------------------------
-@dataclass
+@dataclass(slots=False)
 class XBOXONE_CONST(_GAMEPAD_CONST):
     """
     Xbox One - Controller Constants:
@@ -323,7 +322,7 @@ class XBOXONE_CONST(_GAMEPAD_CONST):
 
 # Dataclass - PS3 Controller
 # ------------------------------
-@dataclass
+@dataclass(slots=False)
 class PS3_CONST(_GAMEPAD_CONST):
     """
     PS3 - Controller Constants:
@@ -390,22 +389,32 @@ class PS3_CONST(_GAMEPAD_CONST):
 # Get Connected Controller
 # -----------------------------
 def getController() -> object():
+    """
+    Get the first valid gamepad controller object
+    (If no valid gamepad is connected an exception error is thrown)
+    :return gampad: Gamepad object
+    """
 
     # Using the first valid gamepad
     try:
         gamepad = devices.gamepads[0]
-    except IndexError:
-        print ('No gamepad found!')
-        return NullHandler
-    return gamepad
 
+        # Return gamepad object
+        return gamepad
+
+    # Exception
+    except IndexError: 
+        # Print Error
+        print('ERROR: getController: No connected gamepad found!')
+        return None
+    
 # Get Controller Type
 # -----------------------------
-def getControllerType() -> str:
-
-    # Get Connected Controller
-    gamepad = getController()
-
+def getControllerType(gamepad) -> str:
+    """
+    Get the gamepad controller type
+    :return gampad_type: Gamepad type (str)
+    """
     # Convert type to string 
     gamepad_typename = format(gamepad)
     
