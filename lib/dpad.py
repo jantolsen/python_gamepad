@@ -6,11 +6,14 @@
 
 # Version
 # ------------------------------
+# 0.1   -   Moved library files to designated folder
+#           and updated Toolbox import
+#           [30.06.2022] - Jan T. Olsen
 # 0.0   -   Initial version
 #           [25.06.2022] - Jan T. Olsen
 
 # Import packages
-import toolbox as Toolbox
+import ctrl_toolbox as CtrlToolbox
 
 # Joystick Class
 # -----------------------------
@@ -20,13 +23,13 @@ class DPad():
     """
     Directional-Pad Class:
     Assign values to Directional-Pad members based on incomming Directional-Pad-Data
-    :param DPadData: D-Pad Data (Toolbox.DPadData)
+    :param DPadData: D-Pad Data (CtrlToolbox.DPadData)
     """
     # Class Constructor
     def __init__(self) -> None:
 
         # D-Pad Data
-        self.dPadData = Toolbox.DPadData()
+        self.dPadData = CtrlToolbox.DPadData()
 
         # Class Variables
         self.name = 'DPad_'

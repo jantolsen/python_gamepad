@@ -6,11 +6,14 @@
 
 # Version
 # ------------------------------
+# 0.1   -   Moved library files to designated folder
+#           and updated Toolbox import
+#           [30.06.2022] - Jan T. Olsen
 # 0.0   -   Initial version
 #           [25.06.2022] - Jan T. Olsen
 
 # Import packages
-import toolbox as Toolbox
+import ctrl_toolbox as CtrlToolbox
 
 # Trigger Class
 # -----------------------------
@@ -21,16 +24,16 @@ class Trigger():
     Trigger Class:
     Assign values to Trigger members based on incomming Trigger-Data
     Trigger values are calculated with correct scaling with data from Gamepad-Constants
-    :param GAMEPAD_CONST: Controller Constants (Toolbox._GAMEPAD_CONST)
-    :param TriggerData: Trigger Data (Toolbox.JoystickData)
+    :param GAMEPAD_CONST: Controller Constants (CtrlToolbox._GAMEPAD_CONST)
+    :param TriggerData: Trigger Data (CtrlToolbox.JoystickData)
     """
     # Class Constructor
     def __init__(self,
                 name : str, 
-                GAMEPAD_CONST : Toolbox._GAMEPAD_CONST) -> None:
+                GAMEPAD_CONST : CtrlToolbox._GAMEPAD_CONST) -> None:
 
         # Trigger Data
-        self.triggerData = Toolbox.TriggerData()
+        self.triggerData = CtrlToolbox.TriggerData()
 
         # Class Variables
         self.name = name
@@ -74,7 +77,7 @@ class Trigger():
     # Get Trigger Axis Value
     def get_axis(self) -> float:
         # Scale Axis Value
-        self.Val = Toolbox.scale_input_trigger(self.triggerData.VAL, self.ScalingDataConstants)
+        self.Val = CtrlToolbox.scale_input_trigger(self.triggerData.VAL, self.ScalingDataConstants)
 
         # Function Return
         return self.Val    

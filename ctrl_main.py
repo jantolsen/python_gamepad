@@ -13,15 +13,15 @@
 import threading
 import time
 
-# Import Class-Files and Toolbox
-import toolbox as Toolbox
+# Import Toolbox
+import ctrl_toolbox as CtrlToolbox
 
 # Import Class Files
-from joystick import Joystick as Joystick
-from trigger import Trigger as Trigger
-from dpad import DPad as DPad
-from button import XboxButton as XboxButton
-from button import PSButton as PSButton
+from lib.joystick import Joystick
+from lib.trigger import Trigger
+from lib.dpad import DPad
+from lib.button import XboxButton
+from lib.button import PSButton
 
 # Controller Class
 # ------------------------------
@@ -33,20 +33,20 @@ class Controller():
 
         # Define Controller Members
         # (based on Dataclasses from Controller-Toolbox)
-        self.GenericAxis = Toolbox.GenericAxisData()
-        self.GenericButton = Toolbox.GenericButtonData()
+        self.GenericAxis = CtrlToolbox.GenericAxisData()
+        self.GenericButton = CtrlToolbox.GenericButtonData()
 
         # Constants
-        self.XBOX_CONST = Toolbox.XBOXONE_CONST()
-        self.PS3_CONST = Toolbox.PS3_CONST()
+        self.XBOX_CONST = CtrlToolbox.XBOXONE_CONST()
+        self.PS3_CONST = CtrlToolbox.PS3_CONST()
         
         # Search for connected controller
-        # (using Toolbox function)
-        self.gamepad = Toolbox.get_controller()
+        # (using CtrlToolbox. function)
+        self.gamepad = CtrlToolbox.get_controller()
         
         # Determine the type of Controller
-        # (using Toolbox function)
-        self.gamepad_type = Toolbox.get_controller_type(self.gamepad)
+        # (using CtrlToolbox. function)
+        self.gamepad_type = CtrlToolbox.get_controller_type(self.gamepad)
 
         # Controller Initialized
         self.init = False
@@ -136,7 +136,7 @@ class Controller():
                 
                 # Axis Event
                 # Get incomming Axis-Input from Controller (integer values)
-                Toolbox.XBOX_event_Axis(event,
+                CtrlToolbox.XBOX_event_Axis(event,
                                         self.XBOX_CONST,
                                         self.JoyLeft.joystickData,
                                         self.JoyRight.joystickData,
@@ -146,7 +146,7 @@ class Controller():
 
                 # Button Event
                 # Get incomming Button-Input from Controller (bool values)
-                Toolbox.XBOX_event_Button(event,
+                CtrlToolbox.XBOX_event_Button(event,
                                           self.XBOX_CONST,
                                           self.JoyLeft.joystickData,
                                           self.JoyRight.joystickData,
@@ -171,7 +171,7 @@ class Controller():
 
                 # Axis Event
                 # Get incomming Axis-Input from Controller (integer values)
-                Toolbox.PS3_event_Axis(event,
+                CtrlToolbox.PS3_event_Axis(event,
                                        self.PS3_CONST,
                                        self.JoyLeft.joystickData,
                                        self.JoyRight.joystickData,
@@ -181,7 +181,7 @@ class Controller():
 
                 # Button Event
                 # Get incomming Button-Input from Controller (bool values)
-                Toolbox.PS3_event_Button(event,
+                CtrlToolbox.PS3_event_Button(event,
                                          self.PS3_CONST,
                                          self.JoyLeft.joystickData,
                                          self.JoyRight.joystickData,

@@ -6,11 +6,14 @@
 
 # Version
 # ------------------------------
+# 0.1   -   Moved library files to designated folder
+#           and updated Toolbox import
+#           [30.06.2022] - Jan T. Olsen
 # 0.0   -   Initial version
 #           [25.06.2022] - Jan T. Olsen
 
 # Import packages
-import toolbox as Toolbox
+import ctrl_toolbox as CtrlToolbox
 
 # XBOX - Button Class
 # -----------------------------
@@ -20,13 +23,13 @@ class XboxButton():
     """
     Xbox Button Class:
     Assign values to Button members based on incomming Button-Data
-    :param XBOX_ButtonData: Xbox Button Data (Toolbox.XBOX_ButtonData)
+    :param XBOX_ButtonData: Xbox Button Data (CtrlToolbox.XBOX_ButtonData)
     """
     # Class Constructor
     def __init__(self):
 
         # D-Pad Data
-        self.xboxButtonData = Toolbox.XBOX_ButtonData()
+        self.xboxButtonData = CtrlToolbox.XBOX_ButtonData()
 
         # Class Variables
         self.name = 'Btn_'
@@ -127,13 +130,13 @@ class PSButton():
     """
     PlayStation Button Class:
     Assign values to Button members based on incomming Button-Data
-    :param PS_ButtonData: Xbox Button Data (Toolbox.PS3_ButtonData)
+    :param PS_ButtonData: Xbox Button Data (CtrlToolbox.PS3_ButtonData)
     """
     # Class Constructor
     def __init__(self):
 
         # D-Pad Data
-        self.psButtonData = Toolbox.PS_ButtonData()
+        self.psButtonData = CtrlToolbox.PS_ButtonData()
 
         # Class Variables
         self.name = 'Btn_'
