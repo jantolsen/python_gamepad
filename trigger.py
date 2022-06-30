@@ -38,7 +38,7 @@ class Trigger():
         self.Val = 0
         self.B1 = 0
         self.B2 = 0
-        self.ScalingDataConstants = GAMEPAD_CONST.TRIG_SCALING
+        self.ScalingDataConstants = GAMEPAD_CONST.TRIGGER_SCALING
 
         # Call Update at Class construction
         self.update()
@@ -47,7 +47,7 @@ class Trigger():
     def update(self) -> None:
 
         # Call internal get-function
-        self.getTrigger()
+        self.get_trigger()
 
         # Class dictionary
         self.trigger = {self.name + 'T'  : float("{:.2f}".format(self.Val)),
@@ -56,7 +56,7 @@ class Trigger():
 
 
     # Get Trigger Back-Bumper No. 1 Value
-    def getButton_B1(self) -> bool:
+    def get_button_B1(self) -> bool:
         # Get Button Value
         self.B1 = self.triggerData.B1
 
@@ -64,7 +64,7 @@ class Trigger():
         return self.B1
 
     # Get Trigger Back-Bumper No. 2 Value
-    def getButton_B2(self) -> bool:
+    def get_button_B2(self) -> bool:
         # Get Button Value
         self.B2 = self.triggerData.B2
 
@@ -72,19 +72,19 @@ class Trigger():
         return self.B2
 
     # Get Trigger Axis Value
-    def getAxis(self) -> float:
+    def get_axis(self) -> float:
         # Scale Axis Value
-        self.Val = Toolbox.scaleTriggerInput(self.triggerData.VAL, self.ScalingDataConstants)
+        self.Val = Toolbox.scale_input_trigger(self.triggerData.VAL, self.ScalingDataConstants)
 
         # Function Return
         return self.Val    
 
     # Get Joystick Values
-    def getTrigger(self) -> dict:
+    def get_trigger(self) -> dict:
         # Call internal functions
-        self.getAxis()
-        self.getButton_B1()
-        self.getButton_B2()
+        self.get_axis()
+        self.get_button_B1()
+        self.get_button_B2()
 
         # Function Return
         # return [self.Val, self.B1, self.B2]

@@ -118,7 +118,7 @@ class PS_ButtonData:
 # Dataclass - Controller Event-Key Constants
 # ------------------------------
 @dataclass(slots=False)
-class _EVENTKEY:
+class _EVENTKEY_CONST:
     """
     Controller Event-Key Constants
     Map for each Button and Axis key
@@ -158,7 +158,7 @@ class _EVENTKEY:
 # Dataclass - Controller Joystick Scaling Constans
 # ------------------------------
 @dataclass(slots=False)
-class _JOY_SCALING:
+class _JOYSTICK_SCALING_CONST:
     """
     Controller Joystick Scaling Constans
     Data constants for scaling Controller Joystick values
@@ -175,7 +175,7 @@ class _JOY_SCALING:
 # Dataclass - Controller Trigger Scaling Constans
 # ------------------------------
 @dataclass(slots=False)
-class _TRIG_SCALING:
+class _TRIGGER_SCALING_CONST:
     """
     Controller Trigger Scaling Constans
     Data constants for scaling Controller Trigger values
@@ -201,17 +201,17 @@ class _GAMEPAD_CONST:
     :param (optional) _TRIG_SCALING:  Trigger Scaling Constants
     """
     # XBOX-One Constants
-    EVENTKEY        : _EVENTKEY = field(init=False, default_factory = _EVENTKEY)         
-    JOY_SCALING     : _JOY_SCALING = field(init=False, default_factory = _JOY_SCALING)
-    TRIG_SCALING    : _TRIG_SCALING = field(init=False, default_factory = _TRIG_SCALING)
+    EVENTKEY            : _EVENTKEY_CONST = field(init=False, default_factory = _EVENTKEY_CONST)         
+    JOYSTICK_SCALING    : _JOYSTICK_SCALING_CONST = field(init=False, default_factory = _JOYSTICK_SCALING_CONST)
+    TRIGGER_SCALING     : _TRIGGER_SCALING_CONST = field(init=False, default_factory = _TRIGGER_SCALING_CONST)
 
     def __post_init__(self):
         # Initialize
-        self._INIT_EVENTKEY()
-        self._INIT_JOY_SCALING()
-        self._INIT_TRIG_SCALING()
+        self._init_eventkey_const()
+        self._init_joystick_scaling_const()
+        self._init_trigger_scaling_const()
     
-    def _INIT_EVENTKEY(self) -> None:
+    def _init_eventkey_const(self) -> None:
         # Defining Axis Event-Key Constants
         self.EVENTKEY.AXIS_EVENT = 'Absolute'   # Axis Event
         self.EVENTKEY.JOYL_X = 'ABS_X'          # Joystick Left - Axis X
@@ -238,21 +238,21 @@ class _GAMEPAD_CONST:
         self.EVENTKEY.BTN_LB2 = 'BTN_TL2'       # Button - Left-Back Bumper No. 2
         self.EVENTKEY.BTN_RB2 = 'BTN_TR2'       # Button - Right-Back Bumper No. 2
 
-    def _INIT_JOY_SCALING(self) -> None:
+    def _init_joystick_scaling_const(self) -> None:
         # Defining Joystick Scaling Constants
-        self.JOY_SCALING.JOY_RAW_MIN = -32768  # Joystick Minimum Raw value
-        self.JOY_SCALING.JOY_RAW_MAX = 32767   # Joystick Maximum Raw value
-        self.JOY_SCALING.JOY_RAW_DB = 1000     # Joystick Deadband Raw value
-        self.JOY_SCALING.JOY_MIN = -100.0      # Joystick Minimum Scaling value
-        self.JOY_SCALING.JOY_MAX = 100.0       # Joystick Maximum Scaling value
+        self.JOYSTICK_SCALING.JOY_RAW_MIN = -32768  # Joystick Minimum Raw value
+        self.JOYSTICK_SCALING.JOY_RAW_MAX = 32767   # Joystick Maximum Raw value
+        self.JOYSTICK_SCALING.JOY_RAW_DB = 1000     # Joystick Deadband Raw value
+        self.JOYSTICK_SCALING.JOY_MIN = -100.0      # Joystick Minimum Scaling value
+        self.JOYSTICK_SCALING.JOY_MAX = 100.0       # Joystick Maximum Scaling value
 
-    def _INIT_TRIG_SCALING(self) -> None:
+    def _init_trigger_scaling_const(self) -> None:
         # Defining Trigger Scaling Constants
-        self.TRIG_SCALING.TRIG_RAW_MIN = 0     # Joystick Minimum Raw value
-        self.TRIG_SCALING.TRIG_RAW_MAX = 255   # Joystick Maximum Raw value
-        self.TRIG_SCALING.TRIG_RAW_DB = 0      # Joystick Deadband Raw value
-        self.TRIG_SCALING.TRIG_MIN = 0.0       # Joystick Minimum Scaling value
-        self.TRIG_SCALING.TRIG_MAX = 100.0     # Joystick Maximum Scaling value
+        self.TRIGGER_SCALING.TRIG_RAW_MIN = 0     # Joystick Minimum Raw value
+        self.TRIGGER_SCALING.TRIG_RAW_MAX = 255   # Joystick Maximum Raw value
+        self.TRIGGER_SCALING.TRIG_RAW_DB = 0      # Joystick Deadband Raw value
+        self.TRIGGER_SCALING.TRIG_MIN = 0.0       # Joystick Minimum Scaling value
+        self.TRIGGER_SCALING.TRIG_MAX = 100.0     # Joystick Maximum Scaling value
 
 # Dataclass - XBOX One Controller Constants
 # ------------------------------
@@ -266,12 +266,12 @@ class XBOXONE_CONST(_GAMEPAD_CONST):
 
     def __post_init__(self):
         # Initialize
-        self._INIT_EVENTKEY()
-        self._INIT_JOY_SCALING()
-        self._INIT_TRIG_SCALING()
+        self.init_eventkey_const()
+        self.init_joystick_scaling_const()
+        self.init_trigger_scaling_const()
     
     # Overwrite Event-Key Constants with controller specific values
-    def _INIT_EVENTKEY(self) -> None:
+    def init_eventkey_const(self) -> None:
         # Defining Axis Event-Key Constants
         self.EVENTKEY.AXIS_EVENT = 'Absolute'   # Axis Event
         self.EVENTKEY.JOYL_X = 'ABS_X'          # Joystick Left - Axis X
@@ -303,22 +303,22 @@ class XBOXONE_CONST(_GAMEPAD_CONST):
         self.EVENTKEY.BTN_SELECT = 'BTN_SELECT' # Button - Select
 
     # Overwrite Joystick Scaling Constants with controller specific values
-    def _INIT_JOY_SCALING(self) -> None:
+    def init_joystick_scaling_const(self) -> None:
         # Defining Joystick Scaling Constants
-        self.JOY_SCALING.JOY_RAW_MIN = -32768  # Joystick Minimum Raw value
-        self.JOY_SCALING.JOY_RAW_MAX = 32767   # Joystick Maximum Raw value
-        self.JOY_SCALING.JOY_RAW_DB = 1000     # Joystick Deadband Raw value
-        self.JOY_SCALING.JOY_MIN = -100.0      # Joystick Minimum Scaling value
-        self.JOY_SCALING.JOY_MAX = 100.0       # Joystick Maximum Scaling value
+        self.JOYSTICK_SCALING.JOY_RAW_MIN = -32768  # Joystick Minimum Raw value
+        self.JOYSTICK_SCALING.JOY_RAW_MAX = 32767   # Joystick Maximum Raw value
+        self.JOYSTICK_SCALING.JOY_RAW_DB = 1000     # Joystick Deadband Raw value
+        self.JOYSTICK_SCALING.JOY_MIN = -100.0      # Joystick Minimum Scaling value
+        self.JOYSTICK_SCALING.JOY_MAX = 100.0       # Joystick Maximum Scaling value
 
     # Overwrite Trigger Scaling Constants with controller specific values
-    def _INIT_TRIG_SCALING(self) -> None:
+    def init_trigger_scaling_const(self) -> None:
         # Defining Trigger Scaling Constants
-        self.TRIG_SCALING.TRIG_RAW_MIN = 0     # Joystick Minimum Raw value
-        self.TRIG_SCALING.TRIG_RAW_MAX = 255   # Joystick Maximum Raw value
-        self.TRIG_SCALING.TRIG_RAW_DB = 0      # Joystick Deadband Raw value
-        self.TRIG_SCALING.TRIG_MIN = 0.0       # Joystick Minimum Scaling value
-        self.TRIG_SCALING.TRIG_MAX = 100.0     # Joystick Maximum Scaling value
+        self.TRIGGER_SCALING.TRIG_RAW_MIN = 0     # Joystick Minimum Raw value
+        self.TRIGGER_SCALING.TRIG_RAW_MAX = 255   # Joystick Maximum Raw value
+        self.TRIGGER_SCALING.TRIG_RAW_DB = 0      # Joystick Deadband Raw value
+        self.TRIGGER_SCALING.TRIG_MIN = 0.0       # Joystick Minimum Scaling value
+        self.TRIGGER_SCALING.TRIG_MAX = 100.0     # Joystick Maximum Scaling value
 
 # Dataclass - PS3 Controller
 # ------------------------------
@@ -332,12 +332,12 @@ class PS3_CONST(_GAMEPAD_CONST):
 
     def __post_init__(self):
         # Initialize
-        self._INIT_EVENTKEY()
-        self._INIT_JOY_SCALING()
-        self._INIT_TRIG_SCALING()
+        self.init_eventkey_const()
+        self.init_joystick_scaling_const()
+        self.init_trigger_scaling_const()
     
     # Overwrite Event-Key Constants with controller specific values
-    def _INIT_EVENTKEY(self) -> None:
+    def init_eventkey_const(self) -> None:
          # Defining Axis Event-Key Constants
         self.EVENTKEY.AXIS_EVENT = 'Absolute'   # Axis Event
         self.EVENTKEY.JOYL_X = 'ABS_X'          # Joystick Left - Axis X
@@ -369,26 +369,26 @@ class PS3_CONST(_GAMEPAD_CONST):
         self.EVENTKEY.BTN_SELECT = 'BTN_SELECT' # Button - Select
 
     # Overwrite Joystick Scaling Constants with controller specific values
-    def _INIT_JOY_SCALING(self) -> None:
+    def init_joystick_scaling_const(self) -> None:
         # Defining Joystick Scaling Constants
-        self.JOY_SCALING.JOY_RAW_MIN = -32768  # Joystick Minimum Raw value
-        self.JOY_SCALING.JOY_RAW_MAX = 32767   # Joystick Maximum Raw value
-        self.JOY_SCALING.JOY_RAW_DB = 1000     # Joystick Deadband Raw value
-        self.JOY_SCALING.JOY_MIN = -100.0      # Joystick Minimum Scaling value
-        self.JOY_SCALING.JOY_MAX = 100.0       # Joystick Maximum Scaling value
+        self.JOYSTICK_SCALING.JOY_RAW_MIN = -32768  # Joystick Minimum Raw value
+        self.JOYSTICK_SCALING.JOY_RAW_MAX = 32767   # Joystick Maximum Raw value
+        self.JOYSTICK_SCALING.JOY_RAW_DB = 1000     # Joystick Deadband Raw value
+        self.JOYSTICK_SCALING.JOY_MIN = -100.0      # Joystick Minimum Scaling value
+        self.JOYSTICK_SCALING.JOY_MAX = 100.0       # Joystick Maximum Scaling value
 
     # Overwrite Trigger Scaling Constants with controller specific values
-    def _INIT_TRIG_SCALING(self) -> None:
+    def init_trigger_scaling_const(self) -> None:
         # Defining Trigger Scaling Constants
-        self.TRIG_SCALING.TRIG_RAW_MIN = 0     # Joystick Minimum Raw value
-        self.TRIG_SCALING.TRIG_RAW_MAX = 255   # Joystick Maximum Raw value
-        self.TRIG_SCALING.TRIG_RAW_DB = 0      # Joystick Deadband Raw value
-        self.TRIG_SCALING.TRIG_MIN = 0.0       # Joystick Minimum Scaling value
-        self.TRIG_SCALING.TRIG_MAX = 100.0     # Joystick Maximum Scaling value
+        self.TRIGGER_SCALING.TRIG_RAW_MIN = 0     # Joystick Minimum Raw value
+        self.TRIGGER_SCALING.TRIG_RAW_MAX = 255   # Joystick Maximum Raw value
+        self.TRIGGER_SCALING.TRIG_RAW_DB = 0      # Joystick Deadband Raw value
+        self.TRIGGER_SCALING.TRIG_MIN = 0.0       # Joystick Minimum Scaling value
+        self.TRIGGER_SCALING.TRIG_MAX = 100.0     # Joystick Maximum Scaling value
 
 # Get Connected Controller
 # -----------------------------
-def getController() -> object():
+def get_controller():
     """
     Get the first valid gamepad controller object
     (If no valid gamepad is connected an exception error is thrown)
@@ -410,7 +410,7 @@ def getController() -> object():
     
 # Get Controller Type
 # -----------------------------
-def getControllerType(gamepad) -> str:
+def get_controller_type(gamepad) -> str:
     """
     Get the gamepad controller type
     :return gampad_type: Gamepad type (str)
@@ -437,13 +437,13 @@ def getControllerType(gamepad) -> str:
 
 # XBOX Controller - Axis Event
 # ------------------------------
-def XBOX_AxisEvent(event : any, 
-                   XBOXONE_CONST : XBOXONE_CONST, 
-                   JoyL : JoystickData,
-                   JoyR : JoystickData,
-                   TrigL : TriggerData,
-                   TrigR : TriggerData,
-                   AxisData : GenericAxisData) -> None:
+def XBOX_event_Axis(event : any, 
+                    XBOXONE_CONST : XBOXONE_CONST, 
+                    JoyL : JoystickData,
+                    JoyR : JoystickData,
+                    TrigL : TriggerData,
+                    TrigR : TriggerData,
+                    AxisData : GenericAxisData) -> None:
     """
     XBOX Controller
     Get incomming Axis-Events from Controller-Input (integer values)
@@ -491,15 +491,15 @@ def XBOX_AxisEvent(event : any,
 
 # XBOX Controller - Button Event
 # ------------------------------
-def XBOX_ButtonEvent(event : any, 
-                    XBOXONE_CONST : XBOXONE_CONST, 
-                    JoyL : JoystickData,
-                    JoyR : JoystickData,
-                    TrigL : TriggerData,
-                    TrigR : TriggerData,
-                    DPad : DPadData,
-                    Button : XBOX_ButtonData,
-                    ButtonData : GenericButtonData) -> None:
+def XBOX_event_Button(event : any, 
+                      XBOXONE_CONST : XBOXONE_CONST, 
+                      JoyL : JoystickData,
+                      JoyR : JoystickData,
+                      TrigL : TriggerData,
+                      TrigR : TriggerData,
+                      DPad : DPadData,
+                      Button : XBOX_ButtonData,
+                      ButtonData : GenericButtonData) -> None:
     """
     XBOX Controller
     Get incomming Button-Events from Controller-Input (bool values)
@@ -632,7 +632,7 @@ def XBOX_ButtonEvent(event : any,
 
 # PS3 Controller - Axis Event
 # ------------------------------
-def PS3_AxisEvent(event : any, 
+def PS3_event_Axis(event : any, 
                    PS3_CONST : PS3_CONST, 
                    JoyL : JoystickData,
                    JoyR : JoystickData,
@@ -686,15 +686,15 @@ def PS3_AxisEvent(event : any,
 
 # PS3 Controller - Button Event
 # ------------------------------
-def PS3_ButtonEvent(event : any, 
-                    PS3_CONST : PS3_CONST, 
-                    JoyL : JoystickData,
-                    JoyR : JoystickData,
-                    TrigL : TriggerData,
-                    TrigR : TriggerData,
-                    DPad : DPadData,
-                    Button : PS_ButtonData,
-                    ButtonData : GenericButtonData) -> None:
+def PS3_event_Button(event : any, 
+                     PS3_CONST : PS3_CONST, 
+                     JoyL : JoystickData,
+                     JoyR : JoystickData,
+                     TrigL : TriggerData,
+                     TrigR : TriggerData,
+                     DPad : DPadData,
+                     Button : PS_ButtonData,
+                     ButtonData : GenericButtonData) -> None:
     """
     PS3 Controller
     Get incomming Button-Events from Controller-Input (bool values)
@@ -789,7 +789,7 @@ def PS3_ButtonEvent(event : any,
 
 # Scale Input Value
 # -----------------------------
-def calcMinMaxScaling(raw_value : int,
+def calc_minmax_scaling(raw_value : int,
                         raw_min : int,
                         raw_max : int,
                         min : float,
@@ -814,12 +814,12 @@ def calcMinMaxScaling(raw_value : int,
 
 # Scale Input Value with Deadband
 # -----------------------------
-def calcMinMaxScaling_DB(raw_value : int,
-                            raw_min : int,
-                            raw_max : int,
-                            raw_db : int,
-                            min : float,
-                            max : float) -> float:
+def calc_minmax_scaling_deadbanc(raw_value : int,
+                                 raw_min : int,
+                                 raw_max : int,
+                                 raw_db : int,
+                                 min : float,
+                                 max : float) -> float:
     """
     Rescale the raw input value from range [raw_min, raw_max] to a desired range [min, max]
     with neglecting Deadband value on the raw input value 
@@ -865,8 +865,8 @@ def calcMinMaxScaling_DB(raw_value : int,
 
 # Scale Joystick Input Value with Deadband
 # -----------------------------
-def scaleJoystickInput(raw_value : int,
-                        JOY_SCALE : _JOY_SCALING) -> float:
+def scale_input_joystick(raw_value : int,
+                        JOYSTICK_SCALING_CONST : _JOYSTICK_SCALING_CONST) -> float:
     """
     Rescale the raw Joystick input value from range [raw_min, raw_max] to a desired range [min, max]
     with neglecting Joystick Deadband 
@@ -875,19 +875,19 @@ def scaleJoystickInput(raw_value : int,
     :return value: Scaled Value
     """
     
-    joy_value = calcMinMaxScaling_DB(raw_value, 
-                                    JOY_SCALE.JOY_RAW_MIN,
-                                    JOY_SCALE.JOY_RAW_MAX,
-                                    JOY_SCALE.JOY_RAW_DB,
-                                    JOY_SCALE.JOY_MIN,
-                                    JOY_SCALE.JOY_MAX)
+    joy_value = calc_minmax_scaling_deadbanc(raw_value, 
+                                             JOYSTICK_SCALING_CONST.JOY_RAW_MIN,
+                                             JOYSTICK_SCALING_CONST.JOY_RAW_MAX,
+                                             JOYSTICK_SCALING_CONST.JOY_RAW_DB,
+                                             JOYSTICK_SCALING_CONST.JOY_MIN,
+                                             JOYSTICK_SCALING_CONST.JOY_MAX)
     
     return joy_value
 
 # Scale Trigger Input Value with Deadband
 # -----------------------------
-def scaleTriggerInput(raw_value : int,
-                        TRIG_SCALE : _TRIG_SCALING) -> float:
+def scale_input_trigger(raw_value : int,
+                        TRIGGER_SCALING_CONST : _TRIGGER_SCALING_CONST) -> float:
     """
     Rescale the raw Trigger input value from range [raw_min, raw_max] to a desired range [min, max]
     with neglecting Trigger Deadband 
@@ -896,11 +896,11 @@ def scaleTriggerInput(raw_value : int,
     :return value: Scaled Value
     """
     
-    trigger_value = calcMinMaxScaling_DB(raw_value, 
-                                        TRIG_SCALE.TRIG_RAW_MIN,
-                                        TRIG_SCALE.TRIG_RAW_MAX,
-                                        TRIG_SCALE.TRIG_RAW_DB,
-                                        TRIG_SCALE.TRIG_MIN,
-                                        TRIG_SCALE.TRIG_MAX)
+    trigger_value = calc_minmax_scaling_deadbanc(raw_value, 
+                                                 TRIGGER_SCALING_CONST.TRIG_RAW_MIN,
+                                                 TRIGGER_SCALING_CONST.TRIG_RAW_MAX,
+                                                 TRIGGER_SCALING_CONST.TRIG_RAW_DB,
+                                                 TRIGGER_SCALING_CONST.TRIG_MIN,
+                                                 TRIGGER_SCALING_CONST.TRIG_MAX)
     
     return trigger_value

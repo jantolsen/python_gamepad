@@ -42,11 +42,11 @@ class Controller():
         
         # Search for connected controller
         # (using Toolbox function)
-        self.gamepad = Toolbox.getController()
+        self.gamepad = Toolbox.get_controller()
         
         # Determine the type of Controller
         # (using Toolbox function)
-        self.gamepad_type = Toolbox.getControllerType(self.gamepad)
+        self.gamepad_type = Toolbox.get_controller_type(self.gamepad)
 
         # Controller Initialized
         self.init = False
@@ -82,8 +82,8 @@ class Controller():
             # Define Controller Classes
             self.JoyLeft = Joystick('JOY_L', self.PS3_CONST)
             self.JoyRight = Joystick('JOY_R', self.PS3_CONST)
-            self.TrigLeft = Trigger(self.PS3_CONST)
-            self.TrigRight = Trigger(self.PS3_CONST)
+            self.TrigLeft = Trigger('L' ,self.XBOX_CONST)
+            self.TrigRight = Trigger('R' ,self.XBOX_CONST)
             self.Button = PSButton()
             self.DPad = DPad()
 
@@ -136,25 +136,25 @@ class Controller():
                 
                 # Axis Event
                 # Get incomming Axis-Input from Controller (integer values)
-                Toolbox.XBOX_AxisEvent(event,
-                                                self.XBOX_CONST,
-                                                self.JoyLeft.joystickData,
-                                                self.JoyRight.joystickData,
-                                                self.TrigLeft.triggerData,
-                                                self.TrigRight.triggerData,
-                                                self.GenericAxis)
+                Toolbox.XBOX_event_Axis(event,
+                                        self.XBOX_CONST,
+                                        self.JoyLeft.joystickData,
+                                        self.JoyRight.joystickData,
+                                        self.TrigLeft.triggerData,
+                                        self.TrigRight.triggerData,
+                                        self.GenericAxis)
 
                 # Button Event
                 # Get incomming Button-Input from Controller (bool values)
-                Toolbox.XBOX_ButtonEvent(event,
-                                                self.XBOX_CONST,
-                                                self.JoyLeft.joystickData,
-                                                self.JoyRight.joystickData,
-                                                self.TrigLeft.triggerData,
-                                                self.TrigRight.triggerData,
-                                                self.DPad.dPadData,
-                                                self.Button.xboxButtonData,
-                                                self.GenericAxis)
+                Toolbox.XBOX_event_Button(event,
+                                          self.XBOX_CONST,
+                                          self.JoyLeft.joystickData,
+                                          self.JoyRight.joystickData,
+                                          self.TrigLeft.triggerData,
+                                          self.TrigRight.triggerData,
+                                          self.DPad.dPadData,
+                                          self.Button.xboxButtonData,
+                                          self.GenericAxis)
 
     # Playstation 3 Controller Monitor
     # ------------------------------    
@@ -171,25 +171,25 @@ class Controller():
 
                 # Axis Event
                 # Get incomming Axis-Input from Controller (integer values)
-                Toolbox.PS3_AxisEvent(event,
-                                                self.PS3_CONST,
-                                                self.JoyLeft.joystickData,
-                                                self.JoyRight.joystickData,
-                                                self.TrigLeft.triggerData,
-                                                self.TrigRight.triggerData,
-                                                self.GenericAxis)
+                Toolbox.PS3_event_Axis(event,
+                                       self.PS3_CONST,
+                                       self.JoyLeft.joystickData,
+                                       self.JoyRight.joystickData,
+                                       self.TrigLeft.triggerData,
+                                       self.TrigRight.triggerData,
+                                       self.GenericAxis)
 
                 # Button Event
                 # Get incomming Button-Input from Controller (bool values)
-                Toolbox.PS3_ButtonEvent(event,
-                                                self.PS3_CONST,
-                                                self.JoyLeft.joystickData,
-                                                self.JoyRight.joystickData,
-                                                self.TrigLeft.triggerData,
-                                                self.TrigRight.triggerData,
-                                                self.DPad.dPadData,
-                                                self.Button.psButtonData,
-                                                self.GenericAxis)
+                Toolbox.PS3_event_Button(event,
+                                         self.PS3_CONST,
+                                         self.JoyLeft.joystickData,
+                                         self.JoyRight.joystickData,
+                                         self.TrigLeft.triggerData,
+                                         self.TrigRight.triggerData,
+                                         self.DPad.dPadData,
+                                         self.Button.psButtonData,
+                                         self.GenericAxis)
 
 # Main Function
 # ------------------------------   
@@ -208,8 +208,8 @@ if __name__ == '__main__':
         # print(xbox_controller.TrigLeft.getTrigger())
         # print(xbox_controller.TrigRight.getTrigger())
         
-        print(xboxController.DPad.getDPad())
-        print(xboxController.Button.getButtons())
+        print(xboxController.DPad.get_DPad())
+        print(xboxController.Button.get_buttons())
         print('\n')
 
         time.sleep(0.100)

@@ -47,7 +47,7 @@ class XboxButton():
     def update(self) -> None:
 
         # Call internal get-function
-        self.getButtons()
+        self.get_buttons()
 
         # Class dictionary
         self.xboxButton = {self.name + 'A' : self.A,
@@ -58,7 +58,7 @@ class XboxButton():
                            self.name + 'Select' : self.Select}
 
     # Get Button A Value
-    def getButtonA(self):
+    def get_button_A(self):
         # Get Button Value
         self.A = self.xboxButtonData.A
 
@@ -66,7 +66,7 @@ class XboxButton():
         return self.A
 
     # Get Button B Value
-    def getButtonB(self):
+    def get_button_B(self):
         # Get Button Value
         self.B = self.xboxButtonData.B
 
@@ -74,7 +74,7 @@ class XboxButton():
         return self.B
 
     # Get Button X Value
-    def getButtonX(self):
+    def get_button_X(self):
         # Get Button Value
         self.X = self.xboxButtonData.X
 
@@ -82,7 +82,7 @@ class XboxButton():
         return self.X
 
     # Get Button X Value
-    def getButtonY(self):
+    def get_button_Y(self):
         # Get Button Value
         self.Y = self.xboxButtonData.Y
 
@@ -90,7 +90,7 @@ class XboxButton():
         return self.Y
 
     # Get Button Start Value
-    def getButtonStart(self):
+    def get_button_Start(self):
         # Get Button Value
         self.Start = self.xboxButtonData.Start
 
@@ -98,7 +98,7 @@ class XboxButton():
         return self.Start
 
     # Get Button Select Value
-    def getButtonSelect(self):
+    def get_button_Select(self):
         # Get Button Value
         self.Select = self.xboxButtonData.Select
 
@@ -106,14 +106,14 @@ class XboxButton():
         return self.Select
 
     # Get Button Values
-    def getButtons(self) -> dict:
+    def get_buttons(self) -> dict:
         # Call internal functions
-        self.getButtonA()
-        self.getButtonB()
-        self.getButtonX()
-        self.getButtonY()
-        self.getButtonStart()
-        self.getButtonSelect()
+        self.get_button_A()
+        self.get_button_B()
+        self.get_button_X()
+        self.get_button_Y()
+        self.get_button_Start()
+        self.get_button_Select()
 
         # Function Return
         return self.xboxButton
@@ -130,7 +130,7 @@ class PSButton():
     :param PS_ButtonData: Xbox Button Data (Toolbox.PS3_ButtonData)
     """
     # Class Constructor
-    def __init__(self, name : str) -> None:
+    def __init__(self):
 
         # D-Pad Data
         self.psButtonData = Toolbox.PS_ButtonData
@@ -152,7 +152,7 @@ class PSButton():
     def update(self) -> None:
 
         # Call internal get-function
-        self.getButtons()
+        self.get_buttons()
 
         # Class dictionary
         self.psButton = {self.name + 'Cross' : self.Cross,
@@ -163,7 +163,7 @@ class PSButton():
                         self.name + 'Select' : self.Select}
 
     # Get Button Cross Value
-    def getButtonCross(self) -> bool:
+    def get_button_Cross(self) -> bool:
         # Get Button Value
         self.Cross = self.psButtonData.Cross
 
@@ -171,7 +171,7 @@ class PSButton():
         return self.Cross
 
     # Get Button Circle Value
-    def getButtonCircle(self) -> bool:
+    def get_button_Circle(self) -> bool:
         # Get Button Value
         self.Circle = self.psButtonData.Circle
 
@@ -179,7 +179,7 @@ class PSButton():
         return self.Circle
 
     # Get Button Triangle Value
-    def getButtonTriangle(self) -> bool:
+    def get_button_Triangle(self) -> bool:
         # Get Button Value
         self.Triangle = self.psButtonData.Triangle
 
@@ -187,7 +187,7 @@ class PSButton():
         return self.Triangle
 
     # Get Button Square Value
-    def getButtonSquare(self) -> bool:
+    def get_button_Square(self) -> bool:
         # Get Button Value
         self.Square = self.psButtonData.Square
 
@@ -195,7 +195,7 @@ class PSButton():
         return self.Square
 
     # Get Button Start Value
-    def getButtonStart(self) -> bool:
+    def get_button_Start(self) -> bool:
         # Get Button Value
         self.Start = self.psButtonData.Start
 
@@ -203,7 +203,7 @@ class PSButton():
         return self.Start
 
     # Get Button Select Value
-    def getButtonSelect(self) -> bool:
+    def get_button_Select(self) -> bool:
         # Get Button Value
         self.Select = self.psButtonData.Select
 
@@ -211,14 +211,14 @@ class PSButton():
         return self.Select
 
     # Get Button Values
-    def getButtons(self) -> dict:
+    def get_buttons(self) -> dict:
         # Call internal functions
-        self.getButtonCross()
-        self.getButtonCircle()
-        self.getButtonTriangle()
-        self.getButtonSquare()
-        self.getButtonStart()
-        self.getButtonSelect()
+        self.get_button_Cross()
+        self.get_button_Circle()
+        self.get_button_Triangle()
+        self.get_button_Square()
+        self.get_button_Start()
+        self.get_button_Select()
 
         # Function Return
         # return [self.Cross, self.Circle, self.Triangle, self.Square, self.Start, self.Select]

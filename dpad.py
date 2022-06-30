@@ -43,7 +43,7 @@ class DPad():
     def update(self) -> None:
 
         # Call internal get-function
-        self.getDPad()
+        self.get_DPad()
         
         # Class dictionary
         self.dPad = {self.name + 'L' : self.L,
@@ -52,7 +52,7 @@ class DPad():
                     self.name + 'D' : self.D}
 
     # Get D-Pad Left-Button Value
-    def getButtonLeft(self) -> bool:
+    def get_button_Left(self) -> bool:
         # Get Button Data
         self.L = self.dPadData.L
 
@@ -60,7 +60,7 @@ class DPad():
         return self.L
 
     # Get D-Pad Right-Button Value
-    def getButtonRight(self) -> bool:
+    def get_button_Right(self) -> bool:
         # Get Button Data
         self.R = self.dPadData.R
 
@@ -68,7 +68,7 @@ class DPad():
         return self.R
 
     # Get D-Pad Up-Button Value
-    def getButtonUp(self) -> bool:
+    def get_button_Up(self) -> bool:
         # Get Button Data
         self.U = self.dPadData.U
 
@@ -76,7 +76,7 @@ class DPad():
         return self.U
 
     # Get D-Pad Down-Button Value
-    def getButtonDown(self):
+    def get_button_Down(self):
         # Get Button Data
         self.D = self.dPadData.D
 
@@ -84,12 +84,12 @@ class DPad():
         return self.D
 
     # Get D-Pad Button Values
-    def getDPad(self) -> dict:
+    def get_DPad(self) -> dict:
         # Call internal functions
-        self.getButtonLeft()
-        self.getButtonRight()
-        self.getButtonUp()
-        self.getButtonDown()
+        self.get_button_Left()
+        self.get_button_Right()
+        self.get_button_Up()
+        self.get_button_Down()
 
         # Function Return
         # return [self.L, self.R, self.U, self.D]

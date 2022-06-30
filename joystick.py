@@ -38,7 +38,7 @@ class Joystick():
         self.X = float("{:.3f}".format(0.0))
         self.Y = 0.0
         self.PB = 0
-        self.ScalingData = GAMEPAD_CONST.JOY_SCALING
+        self.ScalingData = GAMEPAD_CONST.JOYSTICK_SCALING
 
         # Call Update at Class construction
         self.update()
@@ -47,7 +47,7 @@ class Joystick():
     def update(self) -> None:
         
         # Call internal get-function
-        self.getJoystick()
+        self.get_joystick()
 
         # Class dictionary
         self.joy = {self.name + 'X' : float("{:.2f}".format(self.X)),
@@ -55,7 +55,7 @@ class Joystick():
                     self.name + 'PB' : self.PB}
 
     # Get Joystick Pushbutton Value
-    def getButton_PB(self) -> bool:
+    def get_button_PB(self) -> bool:
         # Get Button Value
         self.PB = self.joystickData.PB
 
@@ -63,35 +63,35 @@ class Joystick():
         return self.PB
 
     # Get Joystick Axis-X Value
-    def getAxis_X(self) -> float:
+    def get_axis_X(self) -> float:
         # Get and Scale Axis Value
-        self.X = Toolbox.scaleJoystickInput(self.joystickData.X, self.ScalingData)
+        self.X = Toolbox.scale_input_joystick(self.joystickData.X, self.ScalingData)
 
         # Function Return
         return self.X    
 
     # Get Joystick Axis-Y Value
-    def getAxis_Y(self) -> float:
+    def get_axis_Y(self) -> float:
         # Get and Scale Axis Value
-        self.Y = Toolbox.scaleJoystickInput(self.joystickData.Y, self.ScalingData)
+        self.Y = Toolbox.scale_input_joystick(self.joystickData.Y, self.ScalingData)
 
         # Function Return
         return self.Y   
     
     # Get Joystick Axis Values
-    def getAxes(self) -> float:
+    def get_axes(self) -> tuple:
         # Call internal get axis value
-        self.X = self.getAxis_X()
-        self.Y = self.getAxis_Y()
+        self.X = self.get_axis_X()
+        self.Y = self.get_axis_Y()
 
         # Function Return
-        return [self.X, self.Y]
+        return (self.X, self.Y)
 
     # Get Joystick Values
-    def getJoystick(self) -> dict:
+    def get_joystick(self) -> dict:
         # Call internal functions
-        self.getButton_PB()
-        self.getAxes()
+        self.get_button_PB()
+        self.get_axes()
 
         # Function Return
         return self.joy
