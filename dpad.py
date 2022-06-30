@@ -26,7 +26,7 @@ class DPad():
     def __init__(self) -> None:
 
         # D-Pad Data
-        self.dPadData = Toolbox.DPadData
+        self.dPadData = Toolbox.DPadData()
 
         # Class Variables
         self.name = 'DPad_'

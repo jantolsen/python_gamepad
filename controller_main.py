@@ -154,7 +154,7 @@ class Controller():
                                           self.TrigRight.triggerData,
                                           self.DPad.dPadData,
                                           self.Button.xboxButtonData,
-                                          self.GenericAxis)
+                                          self.GenericButton)
 
     # Playstation 3 Controller Monitor
     # ------------------------------    
@@ -189,7 +189,7 @@ class Controller():
                                          self.TrigRight.triggerData,
                                          self.DPad.dPadData,
                                          self.Button.psButtonData,
-                                         self.GenericAxis)
+                                         self.GenericButton)
 
 # Main Function
 # ------------------------------   

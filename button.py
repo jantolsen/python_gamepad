@@ -26,7 +26,7 @@ class XboxButton():
     def __init__(self):
 
         # D-Pad Data
-        self.xboxButtonData = Toolbox.XBOX_ButtonData
+        self.xboxButtonData = Toolbox.XBOX_ButtonData()
 
         # Class Variables
         self.name = 'Btn_'
@@ -133,7 +133,7 @@ class PSButton():
     def __init__(self):
 
         # D-Pad Data
-        self.psButtonData = Toolbox.PS_ButtonData
+        self.psButtonData = Toolbox.PS_ButtonData()
 
         # Class Variables
         self.name = 'Btn_'

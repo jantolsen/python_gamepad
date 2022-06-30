@@ -30,7 +30,7 @@ class Joystick():
                 GAMEPAD_CONST : Toolbox._GAMEPAD_CONST):
 
         # Joystick Data
-        self.joystickData = Toolbox.JoystickData
+        self.joystickData = Toolbox.JoystickData()
 
         # Class Variables
         self.name = name

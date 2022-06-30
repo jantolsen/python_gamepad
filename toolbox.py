@@ -37,26 +37,26 @@ class GenericAxisData:
 class GenericButtonData:
     
     # Declare Button members
-    S : bool = 0        # Button - South
-    E : bool = 0        # Button - East
-    W : bool = 0        # Button - West
-    N : bool = 0        # Button - North
+    S : bool = False        # Button - South
+    E : bool = False        # Button - East
+    W : bool = False        # Button - West
+    N : bool = False        # Button - North
     
-    Start : bool = 0    # Button - Start
-    Select : bool = 0   # Button - Select
+    Start   : bool = False  # Button - Start
+    Select  : bool = False  # Button - Select
 
-    PB_L : bool = 0     # Joystick Left - Pushbutton
-    PB_R : bool = 0     # Joystick Right - Pushbutton
+    PB_L : bool = False     # Joystick Left - Pushbutton
+    PB_R : bool = False     # Joystick Right - Pushbutton
 
-    DPad_L : bool = 0   # D-Pad - Left
-    DPad_R : bool = 0   # D-Pad - Right
-    DPad_U : bool = 0   # D-Pad - Up
-    DPad_D : bool = 0   # D-Pad - Down
+    DPad_L : bool = False   # D-Pad - Left
+    DPad_R : bool = False   # D-Pad - Right
+    DPad_U : bool = False   # D-Pad - Up
+    DPad_D : bool = False   # D-Pad - Down
 
-    LB1: bool = 0       # Button - Left-Back Bumper No. 1
-    RB1: bool = 0       # Button - Right-Back Bumper No. 1
-    LB2: bool = 0       # Button - Left-Back Bumper No. 2
-    RB2: bool = 0       # Button - Right-Back Bumper No. 2
+    LB1: bool = False       # Button - Left-Back Bumper No. 1
+    RB1: bool = False       # Button - Right-Back Bumper No. 1
+    LB2: bool = False       # Button - Left-Back Bumper No. 2
+    RB2: bool = False       # Button - Right-Back Bumper No. 2
 
 # Dataclass - Joystick Data
 # ------------------------------
@@ -64,9 +64,9 @@ class GenericButtonData:
 @dataclass(slots=False)
 class JoystickData:
     # Define Joystick Data members
-    X   : int = 0   # Joystick - X-Axis
-    Y   : int = 0   # Joystick - Y-Axis
-    PB  : bool = 0  # Joystick - Pushbutton
+    X   : int = 0       # Joystick - X-Axis
+    Y   : int = 0       # Joystick - Y-Axis
+    PB  : bool = False  # Joystick - Pushbutton
 
 # Dataclass - Directional-Pad Data
 # ------------------------------
@@ -74,10 +74,10 @@ class JoystickData:
 @dataclass(slots=False)
 class DPadData:
     # Define Joystick Data members
-    L  : bool = 0   # D-Pad - Left
-    R  : bool = 0   # D-Pad - Right
-    U  : bool = 0   # D-Pad - Up
-    D  : bool = 0   # D-Pad - Down
+    L  : bool = False   # D-Pad - Left
+    R  : bool = False   # D-Pad - Right
+    U  : bool = False   # D-Pad - Up
+    D  : bool = False   # D-Pad - Down
 
 # Dataclass - Trigger Data
 # ------------------------------
@@ -86,8 +86,8 @@ class DPadData:
 class TriggerData:
     # Define Trigger Data members
     VAL : int = 0   # Trigger - Value
-    B1  : bool = 0  # Back Bumper No. 1
-    B2  : bool = 0  # Back Bumper No. 2
+    B1  : bool = False  # Back Bumper No. 1
+    B2  : bool = False  # Back Bumper No. 2
 
 # Dataclass - Button Data (XBOX)
 # ------------------------------
@@ -95,12 +95,12 @@ class TriggerData:
 @dataclass(slots=False)
 class XBOX_ButtonData:
     # Define Button Data members
-    A : bool = 0        # Button - A
-    B : bool = 0        # Button - B
-    X : bool = 0        # Button - X
-    Y : bool = 0        # Button - Y
-    Start : bool = 0    # Button - Start
-    Select : bool = 0   # Button - Select
+    A : bool = False        # Button - A
+    B : bool = False        # Button - B
+    X : bool = False        # Button - X
+    Y : bool = False        # Button - Y
+    Start   : bool = False  # Button - Start
+    Select  : bool = False  # Button - Select
 
 # Dataclass - Button Data (PS)
 # ------------------------------
@@ -108,12 +108,12 @@ class XBOX_ButtonData:
 @dataclass(slots=False)
 class PS_ButtonData:
     # Define Button Data members
-    Cross       : bool = 0  # Button - Cross
-    Circle      : bool = 0  # Button - Circle
-    Triangle    : bool = 0  # Button - Triangle
-    Square      : bool = 0  # Button - Square
-    Start       : bool = 0  # Button - Start
-    Select      : bool = 0  # Button - Select
+    Cross       : bool = False  # Button - Cross
+    Circle      : bool = False  # Button - Circle
+    Triangle    : bool = False  # Button - Triangle
+    Square      : bool = False  # Button - Square
+    Start       : bool = False  # Button - Start
+    Select      : bool = False  # Button - Select
 
 # Dataclass - Controller Event-Key Constants
 # ------------------------------
@@ -571,17 +571,17 @@ def XBOX_event_Button(event : any,
             
             # Determine Left/Right by sign of state-value
             if event.state < 0:
-                DPad.L = 1
+                DPad.L = True
                 ButtonData.DPad_L = event.state
 
             elif event.state > 0:
-                DPad.R = 1
+                DPad.R = True
                 ButtonData.DPad_R = event.state
 
             # Reset D-PAD - Left / Right values
             else:
-                DPad.L = 0
-                DPad.R = 0
+                DPad.L = False
+                DPad.R = False
                 ButtonData.DPad_L = event.state
                 ButtonData.DPad_R = event.state
             
@@ -590,17 +590,17 @@ def XBOX_event_Button(event : any,
 
             # Determine Up/Down by sign of state-value
             if event.state < 0:
-                DPad.U = 1
+                DPad.U = True
                 ButtonData.DPad_U = event.state
 
             elif event.state > 0:
-                DPad.D = 1
+                DPad.D = True
                 ButtonData.DPad_D = event.state
 
             # Reset D-PAD - Up / Down values
             else:
-                DPad.U = 0
-                DPad.D = 0
+                DPad.U = False
+                DPad.D = False
                 ButtonData.DPad_U = event.state
                 ButtonData.DPad_D = event.state
 
@@ -609,12 +609,12 @@ def XBOX_event_Button(event : any,
 
             # Determine if active
             if event.state > 0:
-                TrigL.B2 = 1
+                TrigL.B2 = True
                 ButtonData.LB2 = event.state
 
             # Reset Left-Back Bumper No. 2  
             else:
-                TrigL.B2 = 0
+                TrigL.B2 = False
                 ButtonData.LB2 = event.state
 
         # Button - Right-Back Bumper No. 2
@@ -622,12 +622,12 @@ def XBOX_event_Button(event : any,
 
             # Determine if active
             if event.state > 0:
-                TrigR.B2 = 1
+                TrigR.B2 = True
                 ButtonData.RB2 = event.state
 
             # Reset Right-Back Bumper No. 2
             else:
-                TrigR.B2 = 0
+                TrigR.B2 = False
                 ButtonData.RB2 = event.state
 
 # PS3 Controller - Axis Event

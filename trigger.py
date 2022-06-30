@@ -30,7 +30,7 @@ class Trigger():
                 GAMEPAD_CONST : Toolbox._GAMEPAD_CONST) -> None:
 
         # Trigger Data
-        self.triggerData = Toolbox.TriggerData
+        self.triggerData = Toolbox.TriggerData()
 
         # Class Variables
         self.name = name
