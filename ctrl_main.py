@@ -1,8 +1,7 @@
 # Controller
 # ------------------------------
 # Description:
-# Read input values from external 
-# handheld Controller
+# Read input values from external gamepad Controller
 
 # Version
 # ------------------------------
