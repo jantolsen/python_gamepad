@@ -21,7 +21,7 @@ import ctrl_toolbox as CtrlToolbox
 # with correct scaling obtained from Gamepad-Constant
 class Joystick():
     """
-    Jostick Class:
+    Joystick Class:
     Assign values to Joystick members based on incomming Joystick-Data
     Joystick values are calculated with correct scaling with data from Gamepad-Constants
     :param GAMEPAD_CONST: Controller Constants (CtrlToolbox._GAMEPAD_CONST)
@@ -38,7 +38,7 @@ class Joystick():
         # Class Variables
         self.name = name
         self.joy = dict()
-        self.X = float("{:.3f}".format(0.0))
+        self.X = 0.0
         self.Y = 0.0
         self.PB = 0
         self.ScalingData = GAMEPAD_CONST.JOYSTICK_SCALING
