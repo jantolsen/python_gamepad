@@ -19,7 +19,7 @@ from inputs import devices
 # Dataclass - Axis 
 # ------------------------------
 # Member related to Controller Axis
-@dataclass(slots=False)
+@dataclass()
 class GenericAxisData:
     
     # Declare Axis members
@@ -33,7 +33,7 @@ class GenericAxisData:
 # Dataclass - Buttons 
 # ------------------------------
 # Members related to Controller Buttons
-@dataclass(slots=False)
+@dataclass()
 class GenericButtonData:
     
     # Declare Button members
@@ -61,7 +61,7 @@ class GenericButtonData:
 # Dataclass - Joystick Data
 # ------------------------------
 # Member to hold Controller Input
-@dataclass(slots=False)
+@dataclass()
 class JoystickData:
     # Define Joystick Data members
     X   : int = 0       # Joystick - X-Axis
@@ -71,7 +71,7 @@ class JoystickData:
 # Dataclass - Directional-Pad Data
 # ------------------------------
 # Member to hold Controller Input
-@dataclass(slots=False)
+@dataclass()
 class DPadData:
     # Define Joystick Data members
     L  : bool = False   # D-Pad - Left
@@ -82,7 +82,7 @@ class DPadData:
 # Dataclass - Trigger Data
 # ------------------------------
 # Member to hold Controller Input
-@dataclass(slots=False)
+@dataclass()
 class TriggerData:
     # Define Trigger Data members
     VAL : int = 0   # Trigger - Value
@@ -92,7 +92,7 @@ class TriggerData:
 # Dataclass - Button Data (XBOX)
 # ------------------------------
 # Member to hold Controller Input
-@dataclass(slots=False)
+@dataclass()
 class XBOX_ButtonData:
     # Define Button Data members
     A : bool = False        # Button - A
@@ -105,7 +105,7 @@ class XBOX_ButtonData:
 # Dataclass - Button Data (PS)
 # ------------------------------
 # Member to hold Controller Input
-@dataclass(slots=False)
+@dataclass()
 class PS_ButtonData:
     # Define Button Data members
     Cross       : bool = False  # Button - Cross
@@ -117,7 +117,7 @@ class PS_ButtonData:
 
 # Dataclass - Controller Event-Key Constants
 # ------------------------------
-@dataclass(slots=False)
+@dataclass()
 class _EVENTKEY_CONST:
     """
     Controller Event-Key Constants
@@ -157,7 +157,7 @@ class _EVENTKEY_CONST:
 
 # Dataclass - Controller Joystick Scaling Constans
 # ------------------------------
-@dataclass(slots=False)
+@dataclass()
 class _JOYSTICK_SCALING_CONST:
     """
     Controller Joystick Scaling Constans
@@ -174,7 +174,7 @@ class _JOYSTICK_SCALING_CONST:
 
 # Dataclass - Controller Trigger Scaling Constans
 # ------------------------------
-@dataclass(slots=False)
+@dataclass()
 class _TRIGGER_SCALING_CONST:
     """
     Controller Trigger Scaling Constans
@@ -191,7 +191,7 @@ class _TRIGGER_SCALING_CONST:
 
 # Dataclass - Gamepad Controller Constants
 # ------------------------------
-@dataclass(slots=False)
+@dataclass()
 class _GAMEPAD_CONST:
     """
     Gamepad Controller Constants:
@@ -256,7 +256,7 @@ class _GAMEPAD_CONST:
 
 # Dataclass - XBOX One Controller Constants
 # ------------------------------
-@dataclass(slots=False)
+@dataclass()
 class XBOXONE_CONST(_GAMEPAD_CONST):
     """
     Xbox One - Controller Constants:
@@ -322,7 +322,7 @@ class XBOXONE_CONST(_GAMEPAD_CONST):
 
 # Dataclass - PS3 Controller
 # ------------------------------
-@dataclass(slots=False)
+@dataclass()
 class PS3_CONST(_GAMEPAD_CONST):
     """
     PS3 - Controller Constants:
@@ -814,7 +814,7 @@ def calc_minmax_scaling(raw_value : int,
 
 # Scale Input Value with Deadband
 # -----------------------------
-def calc_minmax_scaling_deadbanc(raw_value : int,
+def calc_minmax_scaling_deadband(raw_value : int,
                                  raw_min : int,
                                  raw_max : int,
                                  raw_db : int,
@@ -875,7 +875,7 @@ def scale_input_joystick(raw_value : int,
     :return value: Scaled Value
     """
     
-    joy_value = calc_minmax_scaling_deadbanc(raw_value, 
+    joy_value = calc_minmax_scaling_deadband(raw_value, 
                                              JOYSTICK_SCALING_CONST.JOY_RAW_MIN,
                                              JOYSTICK_SCALING_CONST.JOY_RAW_MAX,
                                              JOYSTICK_SCALING_CONST.JOY_RAW_DB,
@@ -896,7 +896,7 @@ def scale_input_trigger(raw_value : int,
     :return value: Scaled Value
     """
     
-    trigger_value = calc_minmax_scaling_deadbanc(raw_value, 
+    trigger_value = calc_minmax_scaling_deadband(raw_value, 
                                                  TRIGGER_SCALING_CONST.TRIG_RAW_MIN,
                                                  TRIGGER_SCALING_CONST.TRIG_RAW_MAX,
                                                  TRIGGER_SCALING_CONST.TRIG_RAW_DB,
