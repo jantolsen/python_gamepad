@@ -41,8 +41,6 @@ class XboxButton():
         self.Start = 0    # Button - Start
         self.Select = 0   # Button - Select
 
-        
-
         # Call Update at Class construction
         self.update()
     
